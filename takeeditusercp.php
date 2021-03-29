@@ -1,7 +1,6 @@
 <?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER){
 function bark($msg){stderr("<center><b>Произошла ошибка</b></center>", $msg);}
-$action = $_GET["action"];$updateset = array();
-if($action == "avatar"){
+$action = $_GET["action"];$updateset = array();if(!$_GET["action"]){header('Location: '.$DEFAULTBASEURL);exit();}else{if($action == "avatar"){
 function uploadavatar(){global $CURUSER, $tracker_lang, $avatar_max_width, $avatar_max_height, $rootpath, $CacheBlock;$maxavatarsize = 1024000; // 100kb 
 $userid = $CURUSER["id"];$avatarname = $CURUSER["avatar"]; 
 $allowed_types = array("image/gif" => "gif", "image/pjpeg" => "jpg", "image/jpeg" => "jpg", "image/jpg" => "jpg", "image/png" => "png"); 
@@ -100,5 +99,5 @@ write_log("Проблема с отправкой письма на адрес $
 mysql_query("UPDATE users SET ".implode(",", $updateset)." WHERE id = ".$CURUSER["id"]) or sqlerr(__FILE__,__LINE__);
 ////////////////////////
 $flist = $rootpath."include/user_cache/user_".$CURUSER["id"].".cache";if(file_exists($flist)){unlink($rootpath."include/user_cache/user_".$CURUSER["id"].".cache");}
-header("Location: $action");}else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
+header("Location: $action");}}else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
 <body style="background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"></body></html><?}?>
