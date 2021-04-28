@@ -47,15 +47,15 @@ end_frame();if(get_user_class() >= UC_MODERATOR){?><br><? begin_frame(".:: Па�
 <option value='3'>Аплоадер</option><option value='4'>Модератор</option><option value=''>Администратор</option></select>&nbsp;&nbsp;<input type='submit' value='Искать'></form></center></td></tr>
 <tr><td class='embedded'><center><a href="usersearch">Административный поиск</a></center></td></tr></table><? end_frame();}
 if(!$CacheBlock->Check($_cacher, $staffsBlock_Refresh?0:3600)){
-$res = sql_query("SELECT id, username, class, avatar, country, last_access, supportfor FROM users WHERE support='yes' AND status='confirmed' ORDER BY username LIMIT 10") or sqlerr(__FILE__, __LINE__);
+$res = sql_query("SELECT users.id, users.username, users.class, users.avatar, users.country, users.last_access, users.supportfor, c.name, c.flagpic FROM users 
+LEFT JOIN countries AS c ON c.id = users.country WHERE support='yes' AND status='confirmed' ORDER BY username LIMIT 10") or sqlerr(__FILE__, __LINE__);
 while ($arr = mysql_fetch_assoc($res)){
 if(!$arr['avatar']){$avatar=("<a href='user_$arr[id]'><img width='50' border='0' title='$arr[username]' src='pic/default_avatar.gif'/></a>");}
 else{$avatar=("<a href='user_$arr[id]'><img width='50' src='$arr[avatar]' title='$arr[username]'/></a>");}
-$land = sql_query("SELECT name, flagpic FROM countries WHERE id=".$arr['country']) or sqlerr(__FILE__, __LINE__);$arr2 = mysql_fetch_assoc($land);
 $firstline .= "<tr height='15'><td class='embedded'><center>$avatar<br><a class='altlink' href='user_$arr[id]'><b>".get_user_class_color($arr['class'],$arr['username'])."</b></a></center></td>
 <td class='embedded'><center> ".("'".$arr['last_access']."'">$dt?"<img src='pic/button_online.gif' border='0' alt=\"online\"/>":"<img src='pic/button_offline.gif' border='0' alt=\"offline\"/>" )."</center></td>
 <td class='embedded'><center><a href=\"#\" onclick=\"javascript:window.open('sendpm_".$arr['id']."', 'Отправить PM', 'width=650, height=465');return false;\" title=\"Отправить ЛС\"><img src='pic/pn_inbox.gif' border='0' title='PM'/></a></center></td>
-<td class='embedded'><center><img src='pic/flag/$arr2[flagpic]' title='$arr2[name]' border='0' width='19' height='12'/></center></td>
+<td class='embedded'><center><img src='pic/flag/$arr[flagpic]' title='$arr[name]' border='0' width='19' height='12'/></center></td>
 <td class='embedded'><center>".$arr['supportfor']."</center></td></tr>";}?>
 <?$CacheBlock->Write($_cacher, $firstline);}else $firstline = $CacheBlock->Read($_cacher);
 begin_frame(".:: Первая линия поддержки ::."); ?><table width='100%' cellspacing='0'><tr><td class='embedded' colspan='11'>
