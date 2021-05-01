@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `bonus` (
   `description` varchar(90) NOT NULL,
   `type` varchar(10) NOT NULL DEFAULT 'traffic',
   `quanity` bigint(20) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 
 INSERT INTO `bonus` (`id`, `name`, `points`, `description`, `type`, `quanity`) VALUES
 (1, '<img border="0" src="pic/arrowup.gif" title="1.0GB Uploaded"> 1.0GB Uploaded', 350, 'Обменять бонусы на траффик.', 'traffic', 1073741824),
@@ -39,12 +39,13 @@ INSERT INTO `bonus` (`id`, `name`, `points`, `description`, `type`, `quanity`) V
 (29, '<img border="0" src="pic/class/vip.gif" title="VIP на 1 год"> VIP на 1 год', 38000000, 'Обменять бонусы на ВИП-статус на 1 год.', 'vip', 364),
 (30, '<img border="0" src="pic/class/uploader.gif" title="Релизер на 1 день"> Релизер на 1 день', 120000, 'Обменять бонусы на статус Релизер на 1 день.', 'upl', 1),
 (31, '<img border="0" src="pic/class/uploader.gif" title="Релизер на 30 дней"> Релизер на 30 дней', 3000000, 'Обменять бонусы на статус Релизер на 30 дней.', 'upl', 30),
-(32, '<img border="0" src="pic/class/admin.gif" title="Админ на 1 день"> Админ на 1 день! Собери миллиард и стань Администратором ресурса!', 1000000000, 'Обменять бонусы на возможность стать Админом на 1 день.', 'adm', 1),
-(33, '<img border="0" src="pic/golden.gif" title="Все в Золото на 1 день"> Все в Золото на 1 день', 6000000, 'Обменять бонусы на возможность сделать все релизы Золотыми на 1 день.', 'free', 1),
-(34, '<img border="0" src="pic/golden.gif" title="Все в Золото на 1 неделю"> Все в Золото на 1 неделю', 38000000, 'Обменять бонусы на возможность сделать все релизы Золотыми на 1 неделю.', 'free', 7),
-(35, '<img border="0" src="pic/bril.gif" title="Все в Бриллиант на 1 день"> Все в Бриллиант на 1 день', 10000000, 'Обменять бонусы на возможность сделать все релизы Бриллиантовыми на 1 день.', 'bril', 1),
-(36, '<img border="0" src="pic/bril.gif" title="Все в Бриллиант на 1 неделю"> Все в Бриллиант на 1 неделю', 60000000, 'Обменять бонусы на возможность сделать все релизы Бриллиантовыми на 1 неделю.', 'bril', 7);
+(32, '<img border="0" src="pic/class/admin.gif" title="Админ на 1 день"> Админ на 1 день! Собери миллиард и стань Администратором ресурса!', 1000000000, 'Обменять бонусы на возможность стать Админом на 1 день.', 'adm', 1);
 
 ALTER TABLE `bonus`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `index` (`id`,`name`,`points`,`description`,`type`,`quanity`) USING BTREE;
+  
+ALTER TABLE `users` ADD `vipuntil` datetime NOT NULL default '0000-00-00 00:00:00';
+ALTER TABLE `users` ADD `upluntil` datetime NOT NULL default '0000-00-00 00:00:00';
+ALTER TABLE `users` ADD `admuntil` datetime NOT NULL default '0000-00-00 00:00:00';
+ALTER TABLE `users` ADD `oldclass` tinyint(2) NOT NULL default '0';
