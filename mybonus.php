@@ -54,22 +54,6 @@ if(!mysql_query("UPDATE users SET bonus = bonus - $points, class = ".UC_ADMINIST
 stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>", 'error');die();}
 stdmsg($tracker_lang['success'], "Бонус обменян на статус UC_ADMINISTRATOR.<br />Действие вашего статуса заканчивается: $admuntil");
 $flist = $rootpath."include/user_cache/user_".$CURUSER["id"].".cache";if(file_exists($flist)){unlink($flist);}break;
-case "free": $days = $arr["quanity"];$freeuntil = get_date_time(TIMENOW + $days * 86400);
-if(!mysql_query("UPDATE users SET bonus = bonus - $points, freeuntil = ".sqlesc($freeuntil)." WHERE id = ".sqlesc($CURUSER["id"]))){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>", 'error');die();}
-if(!mysql_query("UPDATE freeleech SET value = 'gold'")){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>", 'error');die();}
-stdmsg($tracker_lang['success'], "Бонус обменян на тотальный Золотой Фрилич.<br />Действие фрилича заканчивается: $freeuntil");
-$bot_text = "Тотальный Золотой Фрилич до $freeuntil. Спасибо [url=user_".$CURUSER["id"]."][b]".get_user_class_color ($class, $names)."[/b][/url]";bot_msg($bot_text);
-$flist = $rootpath."include/user_cache/user_".$CURUSER["id"].".cache";if(file_exists($flist)){unlink($flist);}break;
-case "bril": $days = $arr["quanity"];$briluntil = get_date_time(TIMENOW + $days * 86400);
-if(!mysql_query("UPDATE users SET bonus = bonus - $points, briluntil = ".sqlesc($briluntil)." WHERE id = ".sqlesc($CURUSER["id"]))){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>", 'error');die();}
-if(!mysql_query("UPDATE freeleech SET value = 'brill'")){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>", 'error');die();}
-stdmsg($tracker_lang['success'], "Бонус обменян на тотальный Бриллиантовый Фрилич.<br />Действие фрилича заканчивается: $briluntil");
-$bot_text = "Тотальный Бриллиантовый Фрилич до $briluntil. Спасибо [url=user_".$CURUSER["id"]."][b]".get_user_class_color ($class, $names)."[/b][/url]"; 
-bot_msg($bot_text);$flist = $rootpath."include/user_cache/user_".$CURUSER["id"].".cache";if(file_exists($flist)){unlink($flist);}break;
 default: stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Unknown bonus type!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>");
 }}else{stdhead($tracker_lang['my_bonus']);
 begin_frame(".:: ".$tracker_lang['my_bonus']." :: <font color=\"darkgreen\" size=4>На вашем счету <font color=red><b>".$CURUSER['bonus']."</b></font>&nbsp;бонусов</font> ::.");?><script src="js/ajax.js"></script><script>
