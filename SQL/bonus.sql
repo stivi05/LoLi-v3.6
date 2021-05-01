@@ -48,4 +48,5 @@ ALTER TABLE `bonus`
 ALTER TABLE `users` ADD `vipuntil` datetime NOT NULL default '0000-00-00 00:00:00';
 ALTER TABLE `users` ADD `upluntil` datetime NOT NULL default '0000-00-00 00:00:00';
 ALTER TABLE `users` ADD `admuntil` datetime NOT NULL default '0000-00-00 00:00:00';
+ALTER TABLE `users` ADD `invtime` datetime NOT NULL default '0000-00-00 00:00:00';
 ALTER TABLE `users` ADD `oldclass` tinyint(2) NOT NULL default '0';
