@@ -1,6 +1,6 @@
 <?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER){
 $res1 = sql_query("SELECT COUNT(id) FROM users WHERE gender = '1'");$row1 = mysql_fetch_array($res1);$count = $row1[0];$limit = 10; //Лимит на одной странице
-list($pagertop, $pagerbottom, $limit) = pager2($limit, $count, "boys.php?", array('nopage' => true));
+list($pagertop, $pagerbottom, $limit) = pager($limit, $count, "boys.php?", array('nopage' => true));
 stdhead("Парни нашего трекера");?><table style='background:none;margin-top:0;cellspacing:0;margin-top:7px;cellpadding:0;width:100%;float:center;'><tr>
 <td style='border-radius:8px;-webkit-border-radius:8px;-moz-border-radius:8px;-khtml-border-radius:8px;border:1px solid #E0FFFF;display:block;' class='a'>
 <table style='background:none;width:100%;float:center;border:0;'><tr>
