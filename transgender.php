@@ -1,6 +1,6 @@
 <?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER){
 $res1 = sql_query("SELECT COUNT(id) FROM users WHERE gender = '3'");$row1 = mysql_fetch_array($res1);$count = $row1[0];$limit = 10; //Лимит на одной странице
-list($pagertop, $pagerbottom, $limit) = pager2($limit, $count, "boys.php?", array('nopage' => true));
+list($pagertop, $pagerbottom, $limit) = pager($limit, $count, "boys.php?", array('nopage' => true));
 stdhead("Трансики нашего трекера");?><table style='background:none;margin-top:0;cellspacing:0;margin-top:7px;cellpadding:0;width:100%;float:center;'><tr>
 <td style='border-radius:8px;-webkit-border-radius:8px;-moz-border-radius:8px;-khtml-border-radius:8px;border:1px solid #E0FFFF;display:block;' class='a'>
 <table style='background:none;width:100%;float:center;border:0;'><tr>
@@ -17,9 +17,9 @@ if($arr['country'] > 0){$country = "<img src=\"pic/flag/$arr[flagpic]\" alt=\"$a
 $birthday = date("Y", strtotime($arr["birthday"]));$age = date("Y")-$birthday;if($arr['added'] == '0000-00-00 00:00:00')$arr['added'] = '-';
 if($arr['last_access'] == '0000-00-00 00:00:00')$arr['last_access'] = '-';if($arr["downloaded"] > 0){$ratio = number_format($arr["uploaded"] / $arr["downloaded"], 2);
 if(($arr["uploaded"] / $arr["downloaded"]) > 100)$ratio = "100+";$ratio = "<font color=\"".get_ratio_color($ratio)."\">$ratio</font>";}
-elseif($arr["uploaded"] > 0) $ratio = "Inf.";else $ratio = "Inf.";$gender = "<img src=\"pic/transgenders.gif\" alt=\"Не определился\" style=\"margin-left: 4pt\">";
-if(!$arr[avatar]){$avatar=("<a href=user_$arr[id]><img border='0' height='80' title=$arr[username] src='pic/default_avatar.gif'></a>");
-}else{$avatar=("<a href=user_$arr[id]><img height='80' src=$arr[avatar] title=$arr[username]></a>");}
+elseif($arr["uploaded"] > 0) $ratio = "Inf.";else $ratio = "Inf.";$gender = "<img src='pic/transgenders.gif' alt='Не определился' style='margin-left:4pt'>";
+if(!$arr[avatar]){$avatar=("<a href=user_$arr[id]><img border='0' height='80' title='$arr[username]' src='pic/default_avatar.gif'></a>");
+}else{$avatar=("<a href=user_$arr[id]><img height='80' src='$arr[avatar]' title='$arr[username]'></a>");}
 print("<td style='padding:10px;width:240px;background:none;'><table style='background:none;'border='0' cellspacing='0'><tr>
 <td style='padding:10px;width:240px;border-radius:10px;border:0;' class='a'><table style='background:none;align:center;border:0;' width='240px'>
 <tr><td class='embedded' width='90' style='background:none;align:center;border:0;'><center>$avatar</center></td>
