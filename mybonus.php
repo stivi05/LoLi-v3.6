@@ -1,6 +1,6 @@
-<?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER){
+<?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER){global $rootpath;
 if($_SERVER["REQUEST_METHOD"] == "POST"){if(empty($_POST["bonus_id"])){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Вы не выбрали тип бонуса!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>");die();}
+stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Вы не выбрали тип бонуса!</center><html><head><meta http-equiv=refresh content='4;url=mybonus.php'></head></html>");die();}
 $id = (int) $_POST["bonus_id"];if(!is_valid_id($id)){
 stdmsg("<center>".$tracker_lang['error']."</center>", "<center>".$tracker_lang['access_denied']."</center><html><head><meta http-equiv=refresh content='4;url=/'></head></html>");die();}
 $ref = sql_query("SELECT username, class, downloaded FROM users WHERE id = ".$CURUSER['id']) or sqlerr(__FILE__,__LINE__);
@@ -11,53 +11,48 @@ stdmsg("<center>".$tracker_lang['error']."</center>", "<center>У вас нед�
 die();}
 switch($type){case "traffic": $traffic = $arr["quanity"];
 if(!mysql_query("UPDATE users SET bonus = bonus - $points, uploaded = uploaded + $traffic WHERE id = ".sqlesc($CURUSER["id"]))){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>");die();}
+stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus.php'></head></html>");die();}
 stdmsg("<center>".$tracker_lang['success']."</center>", "<center>Бонус обменян на траффик!</center><html><head><meta http-equiv=refresh content='4;url=user_".$CURUSER['id']."'></head></html>");
 $flist = $rootpath."include/user_cache/user_".$CURUSER["id"].".cache";if(file_exists($flist)){unlink($flist);}break;
 case "traffics": if($downloaded <= 10737418240){
 stdmsg($tracker_lang['error'], "Меньше 10GB Downloaded сбрасывать запрещено!<html><head><meta http-equiv=refresh content='4;url=user_".$CURUSER['id']."'></head></html>", 'error');die();}
 $traffics = $arr["quanity"];if(!mysql_query("UPDATE users SET bonus = bonus - $points, downloaded = downloaded - $traffics WHERE id = ".sqlesc($CURUSER["id"]))){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>");die();}
+stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus.php'></head></html>");die();}
 stdmsg("<center>".$tracker_lang['success']."</center>", "<center>Бонус обменян на траффик!</center><html><head><meta http-equiv=refresh content='4;url=user_".$CURUSER['id']."'></head></html>");
 $flist = $rootpath."include/user_cache/user_".$CURUSER["id"].".cache";if(file_exists($flist)){unlink($flist);}break;
 case "trafficp": $trafficp = $arr["quanity"];
 if(!mysql_query("UPDATE users SET bonus = bonus - $points, downloaded = downloaded + $trafficp WHERE id = ".sqlesc($CURUSER["id"]))){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>");die();}
+stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus.php'></head></html>");die();}
 stdmsg("<center>".$tracker_lang['success']."</center>", "<center>Бонус обменян на траффик!</center><html><head><meta http-equiv=refresh content='4;url=user_".$CURUSER['id']."'></head></html>");
 $flist = $rootpath."include/user_cache/user_".$CURUSER["id"].".cache";if(file_exists($flist)){unlink($flist);}break;
-/*case "invite": $invites = $arr["quanity"]; // Обмен бонусов на приглашения - в базе нет! Но тут возможность как-бы присутствует. Инвайты через клинап при достижении условий***
-if(!mysql_query("UPDATE users SET bonus = bonus - $points, invites = invites + $invites WHERE id = ".sqlesc($CURUSER["id"]))){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>");die();}
-stdmsg("<center>".$tracker_lang['success']."</center>", "<center>Бонус обменян на приглашения!</center><html><head><meta http-equiv=refresh content='4;url=user_".$CURUSER['id']."'></head></html>");
-break;*/
 case "vip": if(get_user_class() >= UC_VIP){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Вам что бонусы некуда девать!?</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>", 'error');
+stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Вам что бонусы некуда девать!?</center><html><head><meta http-equiv=refresh content='4;url=mybonus.php'></head></html>", 'error');
 die();}
 $days = $arr["quanity"];$vipuntil = get_date_time(TIMENOW + $days * 86400);
 if(!mysql_query("UPDATE users SET bonus = bonus - $points, class = ".UC_VIP.", oldclass = ".$CURUSER["class"].", vipuntil = ".sqlesc($vipuntil)." WHERE id = ".sqlesc($CURUSER["id"]))){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>", 'error');die();}
+stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus.php'></head></html>", 'error');die();}
 stdmsg($tracker_lang['success'], "Бонус обменян на статус VIP.<br />Действие вашего статуса заканчивается: $vipuntil");
 $flist = $rootpath."include/user_cache/user_".$CURUSER["id"].".cache";if(file_exists($flist)){unlink($flist);}break;
 case "upl": if(get_user_class() >= UC_UPLOADER){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Вам что бонусы некуда девать!?</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>", 'error');
+stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Вам что бонусы некуда девать!?</center><html><head><meta http-equiv=refresh content='4;url=mybonus.php'></head></html>", 'error');
 die();}
 $days = $arr["quanity"];$upluntil = get_date_time(TIMENOW + $days * 86400);
 if(!mysql_query("UPDATE users SET bonus = bonus - $points, class = ".UC_UPLOADER.", oldclass = ".$CURUSER["class"].", upluntil = ".sqlesc($upluntil)." WHERE id = ".sqlesc($CURUSER["id"]))){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>", 'error');die();}
+stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus.php'></head></html>", 'error');die();}
 stdmsg($tracker_lang['success'], "Бонус обменян на статус UPLOADER.<br />Действие вашего статуса заканчивается: $upluntil");
 $flist = $rootpath."include/user_cache/user_".$CURUSER["id"].".cache";if(file_exists($flist)){unlink($flist);}break;
 case "adm": if(get_user_class() >= UC_ADMINISTRATOR){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Вам что бонусы некуда девать!?</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>", 'error');
+stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Вам что бонусы некуда девать!?</center><html><head><meta http-equiv=refresh content='4;url=mybonus.php'></head></html>", 'error');
 die();}
 $days = $arr["quanity"];$admuntil = get_date_time(TIMENOW + $days * 86400);
 if(!mysql_query("UPDATE users SET bonus = bonus - $points, class = ".UC_ADMINISTRATOR.", oldclass = ".$CURUSER["class"].", admuntil = ".sqlesc($admuntil)." WHERE id = ".sqlesc($CURUSER["id"]))){
-stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>", 'error');die();}
+stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Не могу обновить бонус!</center><html><head><meta http-equiv=refresh content='4;url=mybonus.php'></head></html>", 'error');die();}
 stdmsg($tracker_lang['success'], "Бонус обменян на статус UC_ADMINISTRATOR.<br />Действие вашего статуса заканчивается: $admuntil");
 $flist = $rootpath."include/user_cache/user_".$CURUSER["id"].".cache";if(file_exists($flist)){unlink($flist);}break;
-default: stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Unknown bonus type!</center><html><head><meta http-equiv=refresh content='4;url=mybonus'></head></html>");
+default: stdmsg("<center>".$tracker_lang['error']."</center>", "<center>Unknown bonus type!</center><html><head><meta http-equiv=refresh content='4;url=mybonus.php'></head></html>");
 }}else{stdhead($tracker_lang['my_bonus']);
 begin_frame(".:: ".$tracker_lang['my_bonus']." :: <font color=\"darkgreen\" size=4>На вашем счету <font color=red><b>".$CURUSER['bonus']."</b></font>&nbsp;бонусов</font> ::.");?><script src="js/ajax.js"></script><script>
-function send(){for(var e=document.mybonus,n="",a=0;a<e.elements.length;a++){var t=e.elements[a];if("radio"==t.type&&1==t.checked){n=t.value;break}}var o=new tbdev_ajax;o.onShow("");o.requestFile="mybonus",o.setVar("bonus_id",n),o.method="POST",o.element="ajax",o.sendAJAX("")}
+function send(){for(var e=document.mybonus,n="",a=0;a<e.elements.length;a++){var t=e.elements[a];if("radio"==t.type&&1==t.checked){n=t.value;break}}var o=new tbdev_ajax;o.onShow("");o.requestFile="mybonus.php",o.setVar("bonus_id",n),o.method="POST",o.element="ajax",o.sendAJAX("")}
 </script>
 <div id="loading-layer" style="display:none;font-family: Verdana;font-size: 11px;width:200px;height:50px;background:#FFF;padding:10px;text-align:center;border:1px solid #000">
 <div style="font-weight:bold" id="loading-layer-text"><?=$tracker_lang['ajax_loading'];?></div><br /><img src="pic/loading.gif" border="0" /></div><div id="ajax">
@@ -90,6 +85,8 @@ elseif($row["size"] > 214748364800 && $row["size"] < 322122547200) $bonus_print 
 elseif($row["size"] > 322122547200 && $row["size"] < 429496729600) $bonus_print += round( $cont8, 2);else $bonus_print += round($cont9, 2);}?> 
 <tr><td class="colhead" colspan="9"><center>За каждый час сидирования, Вы получаете .:: <font color="#FF9900"><b><?=$bonus_print?></b></font> ::. бонус(ов)</center></td></tr>
 <tr><td class="colhead"><center>Тип бонуса</center></td><td class="colhead"><center>Цена</center></td><td class="colhead"><center>Обменять</center></td></tr>
-<form action="mybonus.php" name="mybonus" method="post"><?=$output;?><tr><td colspan="3" align="center"><input type="submit" onClick="send(); return false;" value="Обменять" /></td></tr></form></table></div>
-<?end_frame();stdfoot();}}else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
+<form action="mybonus.php" name="mybonus" method="post"><?=$output;?><tr><td colspan="3" align="center"><input type="submit" onClick="send(); return false;" value="Обменять" /></td></tr></form>
+<? print("<tr><td class=colhead colspan=20><center>Вы так-же можете <b>Подарить</b> свои ''кровные бонусы'', одному из пользователей. За перевод с вас снимут 10%. Если согласны, нажмите 
+<a href=\"seedbonus\" alt=\"Подарить Бонусы\" title=\"Подарить Бонусы\"><b>СЮДА</b></a> для перехода на страницу перевода бонусов.</center></td></tr></table></div>");
+end_frame();stdfoot();}}else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
 <body style="background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"></body></html><?}?>
