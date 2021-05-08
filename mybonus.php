@@ -90,6 +90,6 @@ elseif($row["size"] > 214748364800 && $row["size"] < 322122547200) $bonus_print 
 elseif($row["size"] > 322122547200 && $row["size"] < 429496729600) $bonus_print += round( $cont8, 2);else $bonus_print += round($cont9, 2);}?> 
 <tr><td class="colhead" colspan="9"><center>За каждый час сидирования, Вы получаете .:: <font color="#FF9900"><b><?=$bonus_print?></b></font> ::. бонус(ов)</center></td></tr>
 <tr><td class="colhead"><center>Тип бонуса</center></td><td class="colhead"><center>Цена</center></td><td class="colhead"><center>Обменять</center></td></tr>
-<form action="mybonus" name="mybonus" method="post"><?=$output;?><tr><td colspan="3" align="center"><input type="submit" onClick="send(); return false;" value="Обменять" /></td></tr></form></table></div>
+<form action="mybonus.php" name="mybonus" method="post"><?=$output;?><tr><td colspan="3" align="center"><input type="submit" onClick="send(); return false;" value="Обменять" /></td></tr></form></table></div>
 <?end_frame();stdfoot();}}else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
 <body style="background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"></body></html><?}?>
