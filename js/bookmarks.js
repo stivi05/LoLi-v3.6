@@ -1,1 +1,0 @@
-function bookmark(id,type,page){var loading="<img src=\"pic/load.gif\" alt=\"Загрузка..\"  border=\"0\">";var id=id;var type=type;jQuery("#loading").html(loading);$.post('bookmark',{'id':id,'type':type,'page':page},function(response){$('#bookmark_'+id).html(response);jQuery("#loading").empty();},'html');}
