@@ -77,7 +77,7 @@ switch ($search_cat){default: $sql_r = "username";$check1 = "checked";break;case
 case 2: $sql_r = "url";$check2 = "checked";break;case 3: $check3 = "checked";break;}
 if($search_cat != 3){if($search) $searchs = "$sql_r LIKE '%".sqlwildcardesc($search)."%'";}else{$searchs = "uid LIKE '%".sqlwildcardesc("-1")."%'";}
 $res = sql_query("SELECT COUNT(*) FROM sessions WHERE ip <> '00.00.000.000' $searchs");$row = mysql_fetch_array($res);$count = $row[0];$per_list = 50;
-list($pagertop, $pagerbottom, $limit) = pager2($per_list, $count, "onlineusers.php?");
+list($pagertop, $pagerbottom, $limit) = pager($per_list, $count, "onlineusers.php?");
 $spy_res = sql_query("SELECT url, uid, username, class, ip, time, useragent FROM sessions WHERE ip <> '00.00.000.000' $searchs ORDER BY class ASC $limit");
 ?><table  class='embedded' cellspacing='0' cellpadding='3' align='center' width='100%'><tr><td width='100%' colspan='3' align='center'>
 <table class='embedded' border='0' cellpadding='0' cellspacing='10' align='center'><form method='get' action='onlineusers.php'><tr>
