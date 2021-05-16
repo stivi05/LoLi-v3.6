@@ -7,7 +7,7 @@ $result = sql_query ("SELECT id, username, uploaded, downloaded, ip, added, last
 if($row = mysql_fetch_array($result)){do{if($row["uploaded"] == "0"){$ratio = "inf";}
 elseif($row["downloaded"] == "0"){$ratio = "inf";}else{$ratio = number_format($row["uploaded"] / $row["downloaded"], 3);
 $ratio = "<font color='".get_ratio_color($ratio)."'>$ratio</font>";}
-echo "<tr><td align='center'><a href='user_".$row["id"]."'><b>".$row["username"]."</b></a></td><td align='center'><strong>".$ratio."</strong></td>
+echo "<tr><td align='center'><a href='userdetails.php?id=".$row["id"]."'><b>".$row["username"]."</b></a></td><td align='center'><strong>".$ratio."</strong></td>
 <td align='center'>".$row["ip"]."</td><td align='center'>".$row["added"]."</td><td align='center'>".$row["last_access"]."</td>
 <td align='center'>".mksize($row["downloaded"])."</td><td align='center'>".mksize($row["uploaded"])."</td></tr>";
 }while($row = mysql_fetch_array($result));}else{print "<tr><td colspan=7 align=\"center\">Извините, записей не обнаружено!</td></tr>";}
