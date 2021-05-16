@@ -1,6 +1,6 @@
 <?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER && get_user_class() >= UC_MODERATOR){
 stdhead("Повторяющиеся IP пользователей");begin_frame("Повторяющиеся IP пользователей");
-$res = sql_query("SELECT count(*) AS dupl, ip FROM users GROUP BY ip ORDER BY dupl DESC") or sqlerr(__FILE__, __LINE__);
+$res = sql_query("SELECT count(*) AS dupl, ip FROM users WHERE ip <> '' GROUP BY ip ORDER BY dupl DESC") or sqlerr(__FILE__, __LINE__);
 print("<table style='background:none;width:100%;border:0;'><tr><td class='zaliwka' style='font-weight:bold;color:#FFFFFF;width:90px;' align='center'>Пользователь</td>
 <td class='zaliwka' style='font-weight:bold;color:#FFFFFF;width:70px;' align='center'>Email</td>
 <td class='zaliwka' style='font-weight:bold;color:#FFFFFF;width:70px;' align='center'>Регистрация</td>
