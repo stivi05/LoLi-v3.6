@@ -31,7 +31,7 @@ $staff_table[$arr['class']] = $staff_table[$arr['class']]."<td style='padding:5p
 &nbsp;&nbsp;$country</center></td></tr></table><hr width='200px'><table style='background:none;border:0;' width='240px'><center>
 <b>Последний визит:</b>&nbsp;<font color='blue'><b>".get_elapsed_time(sql_timestamp_to_unix_timestamp($arr["last_access"]))." ".$tracker_lang['ago']."</b></font></center></table>
 </td></tr></table></td>";
-++$col[$arr['class']];if($col[$arr['class']]<=4) $staff_table[$arr['class']]=$staff_table[$arr['class']]."";
+++$col[$arr['class']];if($col[$arr['class']]<=3) $staff_table[$arr['class']]=$staff_table[$arr['class']]."";
 else{$staff_table[$arr['class']]=$staff_table[$arr['class']]."</tr><tr>";$col[$arr['class']]=0;}}
 $content.= "<tr><td style='border-radius:8px;-webkit-border-radius:8px;-moz-border-radius:8px;-khtml-border-radius:8px;border:1px solid #E0FFFF;display:block;' class='a'>
 <table style='background:none;width:100%;float:center;border:0;'><tr><td class='zaliwka' style='colspan:14;height:20px;;border:0;border-radius:5px;'>
