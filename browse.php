@@ -65,7 +65,7 @@ $where $orderby $limit";$res = sql_query($query) or die(mysql_error());}else uns
 //////////////////////
 if(isset($cleansearchstr)){stdhead($tracker_lang['search_results_for']." \"$cleansearchstr\"");}elseif(isset($cleansearchstr2)){
 stdhead($tracker_lang['search_results_for']." \"$cleansearchstr2\"");}elseif(isset($descrsearchstr)){stdhead($tracker_lang['search_results_for']." \"$descrsearchstr\"");
-}else{stdhead($tracker_lang['browse']);}?>
+}else{stdhead($tracker_lang['browse']);}?><script src="js/bookmarks.js"></script>
 <table style="background:none;cellspacing:0;cellpadding:0;width:100%;float:center;"><tr>
 <td style="border-radius:15px;border:none;" class='a'><table style="background:none;width:100%;float:center;border:0;"><tr>
 <td class="zaliwka" style="color:#FFFFFF;colspan:14;height:30px;font-family:cursive;font-weight:bold;font-size:14px;text-align:center;border:0;border-radius:5px;">
