@@ -43,3 +43,4 @@ location /rules {try_files $uri /rules.php$is_args$args;}
 Если надо сократить адрес страницы деталей торрента, то такой код применяем, и его-же можно править под другие страницы, где есть ID - Юзердеталис и прочее.
 ----------------------------------------
 rewrite ^/details_(.*)$&hit=1 /details.php?id=$1&hit=1 last;
+rewrite ^/bookmark_(.*)$ /bookmark.php?torrent=$1 last;
