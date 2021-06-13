@@ -31,20 +31,20 @@ foreach ($incats as $incat){$all &= isset($_GET["i{$incat['id']}"]);if(isset($_G
 if($all){$wherecatina = array();$whereincatina = array();$addparam = "";}
 if(count($wherecatina) > 1)$wherecatin = implode(",", $wherecatina);elseif(count($wherecatina) == 1)$wherea[] = "category = $wherecatina[0]";
 if(count($whereincatina) > 1)$whereincatin = implode(",", $whereincatina);elseif(count($whereincatina) == 1)$wherea[] = "incategory = $whereincatina[0]";$wherebase = $wherea;
-if(isset($cleansearchstr)){$wherea[] = "t.name COLLATE UTF8_GENERAL_CI LIKE '%".sqlwildcardesc($searchstr)."%'";$addparam .= "search=".urlencode($searchstr)."&amp;";}
+if(isset($cleansearchstr)){$wherea[] = "t.name LIKE '%".sqlwildcardesc($searchstr)."%'";$addparam .= "search=".urlencode($searchstr)."&amp;";}
 if(isset($cleansearchstr2)){$name = str_replace("'", "%", sqlwildcardesc($tsearchstr));$exp = "(";$explName = explode($exp, $name);
-$wherea[] = "t.name COLLATE UTF8_GENERAL_CI LIKE '".$explName[0]."%'";$addparam .= "tsearch=".urlencode($tsearchstr)."&amp;";}
-if(isset($descrsearchstr)){$wherea[] = "t.keywords COLLATE UTF8_GENERAL_CI LIKE '%".sqlwildcardesc($dsearchstr)."%'";$addparam .= "dsearch=".urlencode($dsearchstr)."&amp;";}
-if(isset($jescrsearchstr)){$wherea[] = "t.description COLLATE UTF8_GENERAL_CI LIKE '%".sqlwildcardesc($jsearchstr)."%'";$addparam .= "jsearch=".urlencode($jsearchstr)."&amp;";}
-if(isset($letter)){$wherea[] = "t.name COLLATE UTF8_GENERAL_CI LIKE '$letter%'";$addparam = "letter=".urlencode($letter)."&amp;";}$where = implode(" AND ", $wherea);
+$wherea[] = "t.name LIKE '".$explName[0]."%'";$addparam .= "tsearch=".urlencode($tsearchstr)."&amp;";}
+if(isset($descrsearchstr)){$wherea[] = "t.keywords LIKE '%".sqlwildcardesc($dsearchstr)."%'";$addparam .= "dsearch=".urlencode($dsearchstr)."&amp;";}
+if(isset($jescrsearchstr)){$wherea[] = "t.description LIKE '%".sqlwildcardesc($jsearchstr)."%'";$addparam .= "jsearch=".urlencode($jsearchstr)."&amp;";}
+if(isset($letter)){$wherea[] = "t.name LIKE '$letter%'";$addparam = "letter=".urlencode($letter)."&amp;";}$where = implode(" AND ", $wherea);
 if(isset($wherecatin) && !empty($wherecatin))$where .= ($where ? " AND " : "") . "t.category IN (".$wherecatin.")";
 if(isset($whereincatin) && !empty($whereincatin))$where .= ($where ? " AND " : "") . "t.incategory IN (".$whereincatin.")";
 if($where != "")$where = "WHERE $where";$res = mysql_query("SELECT COUNT(id) FROM torrents AS t $where") or die(mysql_error());$row = mysql_fetch_array($res);
 $count = $row[0];$num_torrents = $count;if(!$count && isset($cleansearchstr)){$wherea = $wherebase;$searcha = explode(" ", $cleansearchstr);$sc = 0;
-foreach($searcha as $searchss){if(strlen($searchss) <= 1)continue;$sc++;if($sc > 5)break;$ssa = array();$ssa[] = "t.name COLLATE UTF8_GENERAL_CI LIKE '%".sqlwildcardesc($searchss)."%'";}
+foreach($searcha as $searchss){if(strlen($searchss) <= 1)continue;$sc++;if($sc > 5)break;$ssa = array();$ssa[] = "t.name LIKE '%".sqlwildcardesc($searchss)."%'";}
 if($sc){$where = implode(" AND ", $wherea);if($where != "")$where = "WHERE $where";$count = $row[0];}}
 if(!$count && isset($cleansearchstr2)){$wherea = $wherebase;$tsearcha = explode(" (", $cleansearchstr2);$sc = 0;
-foreach($tsearcha as $tsearchss){if(strlen($tsearchss) <= 1)continue;$sc++;if($sc > 5)break;$ssa = array();$ssa[] = "t.name COLLATE UTF8_GENERAL_CI LIKE '%".sqlwildcardesc($tsearchss)."%'";}
+foreach($tsearcha as $tsearchss){if(strlen($tsearchss) <= 1)continue;$sc++;if($sc > 5)break;$ssa = array();$ssa[] = "t.name LIKE '%".sqlwildcardesc($tsearchss)."%'";}
 if($sc){$where = implode(" AND ", $wherea);if($where != "")$where = "WHERE $where";$count = $row[0];}}
 if(!$count && isset($descrsearchstr)){$wherea = $wherebase;$dsearcha = explode(" ", $descrsearchstr);$dsc = 0;
 foreach($dsearcha as $dsearchss){if(strlen($dsearchss) <= 1)continue;$dsc++;
@@ -53,17 +53,16 @@ if($dsc){$where = implode(" AND ", $wherea);if($where != "")$where = "WHERE $whe
 if(!$count && isset($letter)){$wherea = $wherebase;$letter = explode(" ", $letter);$lsc = 0;
 foreach ($letter as $letter){if(strlen($letter) <= 1)continue;$lsc++;if($lsc > 5)break;$ssa = array();$ssa[] = "t.name COLLATE UTF8_GENERAL_CI LIKE '$letter%'";}
 if($lsc){$where = implode(" AND ", $wherea);if($where != "")$where = "WHERE $where";$count = $row[0];}} 
-$torrentsperpage = $CURUSER["torrentsperpage"];if(!$torrentsperpage)$torrentsperpage = 25;
+$userid = $CURUSER['id'];$torrentsperpage = $CURUSER["torrentsperpage"];if(!$torrentsperpage)$torrentsperpage = 25;
 if($count){if($addparam != ""){if($pagerlink != ""){if($addparam{strlen($addparam)-1} != ";"){
 $addparam = $addparam."&".$pagerlink;}else{$addparam = $addparam . $pagerlink;}}}else{$addparam = $pagerlink;}
 ////////////////////////////////////////////////	
 list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, "browse.php?" . $addparam);
-$query = "SELECT t.id, t.moderated, t.moderatedby, t.category, t.incategory, (t.leechers + t.remote_leechers) AS leechers, 
-(t.seeders + t.remote_seeders) AS seeders, t.multitracker, t.last_mt_update, t.free, t.name, t.info_hash, t.times_completed, t.size, 
-t.added, t.comments, t.filename, t.not_sticky, t.owner, c.name AS cat_name, c.image AS cat_pic, i.name AS incat_name, i.image AS incat_pic, u.username, u.class FROM torrents AS t 
-LEFT JOIN categories AS c ON t.category = c.id LEFT JOIN incategories AS i ON t.incategory = i.id LEFT JOIN users AS u ON t.owner = u.id $where $orderby $limit";
-///////////////////////////////
-$res = sql_query($query) or die(mysql_error());}else unset($res);	
+$query = "SELECT t.*, c.name AS cat_name, c.image AS cat_pic, i.name AS incat_name, i.image AS incat_pic, u.username, u.class FROM torrents AS t 
+LEFT JOIN categories AS c ON t.category = c.id LEFT JOIN incategories AS i ON t.incategory = i.id LEFT JOIN users AS u ON t.owner = u.id 
+LEFT JOIN bookmarks ON bookmarks.userid = $userid AND bookmarks.torrentid = t.id LEFT JOIN snatched ON snatched.userid = $userid AND snatched.torrent = t.id 
+$where $orderby $limit";$res = sql_query($query) or die(mysql_error());}else unset($res);
+//////////////////////
 if(isset($cleansearchstr)){stdhead($tracker_lang['search_results_for']." \"$cleansearchstr\"");}elseif(isset($cleansearchstr2)){
 stdhead($tracker_lang['search_results_for']." \"$cleansearchstr2\"");}elseif(isset($descrsearchstr)){stdhead($tracker_lang['search_results_for']." \"$descrsearchstr\"");
 }else{stdhead($tracker_lang['browse']);}?>
