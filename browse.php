@@ -58,8 +58,8 @@ if($count){if($addparam != ""){if($pagerlink != ""){if($addparam{strlen($addpara
 $addparam = $addparam."&".$pagerlink;}else{$addparam = $addparam . $pagerlink;}}}else{$addparam = $pagerlink;}
 ////////////////////////////////////////////////	
 list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, "browse.php?" . $addparam);
-$query = "SELECT t.*, c.name AS cat_name, c.image AS cat_pic, i.name AS incat_name, i.image AS incat_pic, u.username, u.class FROM torrents AS t 
-LEFT JOIN categories AS c ON t.category = c.id LEFT JOIN incategories AS i ON t.incategory = i.id LEFT JOIN users AS u ON t.owner = u.id 
+$query = "SELECT t.*, c.name AS cat_name, c.image AS cat_pic, i.name AS incat_name, i.image AS incat_pic, u.username, u.class, bookmarks.userid, snatched.userid AS suid 
+FROM torrents AS t LEFT JOIN categories AS c ON t.category = c.id LEFT JOIN incategories AS i ON t.incategory = i.id LEFT JOIN users AS u ON t.owner = u.id 
 LEFT JOIN bookmarks ON bookmarks.userid = $userid AND bookmarks.torrentid = t.id LEFT JOIN snatched ON snatched.userid = $userid AND snatched.torrent = t.id 
 $where $orderby $limit";$res = sql_query($query) or die(mysql_error());}else unset($res);
 //////////////////////
