@@ -1,7 +1,8 @@
 <?php if (!defined('UC_SYSOP')) die("Direct access denied.<html><head><meta http-equiv='refresh' content='0;url=/'></head><body style='background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;'></body></html>");
 ?><!DOCTYPE html><html lang="ru"><head><link rel="preconnect" href="$DEFAULTBASEURL"/><link rel="dns-prefetch" href="$DEFAULTBASEURL"/>
 <meta charset="utf-8"><meta name="description" content="$SITENAME"><link rel="canonical" href="$DEFAULTBASEURL/index.php"/>
-<title><?=$title?></title><link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/><link rel="stylesheet" href="/themes/HDGray/HDGray.css"/><?=get_head();?><?
+<title><?=$title?></title><?header("Cache-Control: public, max-age=604800, immutable");?><link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon"type="image/x-icon" href="data:image/x-icon;,"><link rel="stylesheet" href="/themes/HDGray/HDGray.css"/><?=get_head();?><?
 if($keywords) echo "<meta name='keywords' content='$keywords'>";if($description) echo "<meta name='description' content='$description'>";?>
 <div id="myprofile" style="display:none;position:fixed;margin-top:0;margin-left:450px;border:2px solid #bdbdbd;-moz-border-radius:6px;border-radius:6px;-webkit-border-radius:6px;align:center;text-align:center;background:#008080;box-shadow:1px 1px 5px #5d5d5d;-moz-box-shadow:1px 1px 5px #5d5d5d;-webkit-box-shadow:1px 1px 5px #5d5d5d;">
 <?$usernames = iconv('cp1251', 'UTF-8', $CURUSER["username"]);$iduser = $CURUSER["id"];$uped = mksize($CURUSER['uploaded']);$downed = mksize($CURUSER['downloaded']);
