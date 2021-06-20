@@ -43,21 +43,22 @@ if (get_user_class() >= UC_SYSOP){if($my_siteoff){print("<br><br><table align='c
 <table align="center" style="background:none;cellspacing:0;cellpadding:0;width:98%;"><tr><td style="border-radius:15px;border:none;" class='a'>
 <table style="background:none;width:100%;border:0;"><tr><td class="zaliwka" style="color:white;colspan:14;height:30px;font-weight:bold;font-size:14px;border:0;border-radius:5px;">
 <table align="center" style="background:none;cellspacing:0;cellpadding:0;width:98%;"><tr>
-<td style="background:none;width:100%;text-align:center;font-size:12px;border:0;"><a class="but" title="Home" href="/">Home</a>&nbsp;•&nbsp;<a class="but" href="browse" title="Browse">Browse</a><?if(get_user_class() >= UC_UPLOADER){?>&nbsp;•&nbsp;<a class="but" title="Upload" href="upload">Upload</a><?}?>&nbsp;•&nbsp;<a class="but" title="Requests" href="zakaz.php">Requests</a>&nbsp;•&nbsp;<a class="but" title="Privat Chat" href="chat">Chat</a>&nbsp;•&nbsp;<a class="but" title="Forum" href="forum.php">Forum</a>&nbsp;•&nbsp;<a class="but" title="Rules" href="rules">Rules</a>&nbsp;•&nbsp;<a class="but" title="FAQ" href="faq">FAQ</a>&nbsp;•&nbsp;<a class="but" title="Staff" href="team">Staff</a>&nbsp;•&nbsp;<a class="but" title="Users" href="users">Users</a></td>
-<?if(get_user_class() >= UC_SYSOP){?>
-<td style="background:none;border:0;"><a alt="AdminPanel" href="admin.php"><img style='margin-top:0;margin-right:10px;' align='right' border='0' src="pic/adcp.png" alt="AdminPanel"/></a></td><?}?>
+<td style="background:none;width:100%;text-align:center;font-size:12px;border:0;"><a class="but" title="Home" href="/">Home</a>&nbsp;•&nbsp;<a class="but" href="browse" title="Browse">Browse</a><?if(get_user_class() >= UC_UPLOADER){?>&nbsp;•&nbsp;<a class="but" title="Upload" href="upload">Upload</a><?}if($CURUSER){?>&nbsp;•&nbsp;<a class="but" title="Requests" href="zakaz.php">Requests</a>&nbsp;•&nbsp;<a class="but" title="Privat Chat" href="chat">Chat</a>&nbsp;•&nbsp;<a class="but" title="Forum" href="forum.php">Forum</a>&nbsp;•&nbsp;<a class="but" title="Rules" href="rules">Rules</a>&nbsp;•&nbsp;<a class="but" title="FAQ" href="faq">FAQ</a>&nbsp;•&nbsp;<a class="but" title="Staff" href="team">Staff</a>&nbsp;•&nbsp;<a class="but" title="Users" href="users">Users</a>
+ <?}else{?><a class="but" title="Login" href="login.php">Login</a><?}?></td><?if(get_user_class() >= UC_SYSOP){?>
+<td style="background:none;border:0;"><a alt="AdminPanel" href="admin.php"><img style='margin-top:0;margin-right:10px;' align='right' border='0' src="pic/adcp.png" alt="AdminPanel"/></a></td><?}if($CURUSER){?>
 <td style="background:none;border:0;"><a href="javascript://" onclick="$('#myprofile').fadeIn('fast');" title='Profile' alt='Profile'><img style='margin-top:0;margin-right:10px;' align='right' border='0' src="pic/profs.png" alt="Profile"/></a></td>
 <td style="background:none;border:0;"><a alt="Logout" href="logout"><img style='margin-top:0;margin-right:10px;' align='right' border='0' src="pic/logout.png" alt="Logout"/></a></td>
 <td style="background:none;border:0;"><a alt="Русский" href="rus"><img style='margin-top:0;margin-right:10px;' align='right' border='0' src="pic/russia.png" alt="RUS"/></a></td>
 <td style="background:none;border:0;"><a alt="Украинский" href="ukr"><img style='margin-top:0;margin-right:10px;' align='right' border='0' src="pic/ukr.gif" alt="UA"/></a></td>
 <td style="background:none;border:0;"><a alt="English" href="usa"><img style='margin-top:0;margin-right:10px;' align='right' border='0' src="pic/usa.png" alt="ENG"/></a></td>
-<td style="background:none;border:0;"><a href="grss" title="RSS"><img style='border:none;margin-top:0;margin-right:10px;' align='right' alt="RSS" title="RSS" src="pic/rssf.png"/></a></td>
+<td style="background:none;border:0;"><a href="grss" title="RSS"><img style='border:none;margin-top:0;margin-right:10px;' align='right' alt="RSS" title="RSS" src="pic/rssf.png"/></a></td><?}?>
 <td style="background:none;border:0;"><a href="https://t.me" target="_blank"><img style='margin-top:0;margin-right:0px;' align='right' border='0' alt="Telegram" title="Telegram" src="pic/tlgr.png"/></a>
 </td><td style="background:none;width:100%;text-align:right;border:0;float:right;"><form name="srch" method="get" action="browse"><div style="padding-left: 13px;"><div class="inputs">
 <div align="center" style="position:relative;"><script src="js/suggest0.js"></script>
 <input id="suggestinput0" type="text" style="padding:0px 0px;background-image:none;width:117px ! important;" class="inputs" onblur="if(this.value=='') this.value='torrent search...';" name="search" value="torrent search..." onfocus="if(this.value=='torrent search...') this.value='';"/>
 <div style='float:center;' id="suggest0"></div></div></div></div></form></td>
 </tr><tr><td align="center" style="background:none;width:100%;float:center;border:0;"></td></tr></table></td></tr></table></td></tr>
+<?if($CURUSER){?>
 <tr><td style="background:none;width:100%;text-align:center;border:0;"><table style="background:none;cellspacing:0;cellpadding:0;width:100%;float:center;"><tr>
 <td style="background:#f7f7f7;border-radius:10px;border:none;"><table style="background:none;width:100%;float:center;border:0;"><tr>
 <td style="width:98%;text-align:center;border:0;border-radius:10px;background:#ececec;">
@@ -82,6 +83,6 @@ case 'brill':$frels = "<td class='bottom' align='center' style='background:none;
 $frelss = $frels;$content.="$frelss";$CacheBlock->Write($_cache2, $content);}else{echo($CacheBlock->Read($_cache2));}?>
 <?=$messaga?><td class="bottom" align="center" style='background:none;width:150px;padding:0px;border:0px;'><span class="smallfont"><b>Current time:</b> <span id="clock">Загрузка...</span><br>
 <script>function refrClock(){var d=new Date();var s=d.getSeconds();var m=d.getMinutes();var h=d.getHours();var day=d.getDay();var date=d.getDate();var month=d.getMonth();var year=d.getFullYear();var am_pm;if (s<10) {s="0" + s}if (m<10) {m="0" + m}if (h>12){h-=12;am_pm = "<b>PM</b>"}else {am_pm="<b>AM</b>"}if (h<10) {h="0" + h}document.getElementById("clock").innerHTML=h + ":" + m + ":" + s + " " + am_pm;setTimeout("refrClock()",1000);}refrClock();
-</script></span></td></tr></table></td></tr><tr><td align="center" style="background:none;width:100%;float:center;border:0;"></td></tr></table></td></tr></table></td></tr>
+</script></span></td></tr></table></td></tr><tr><td align="center" style="background:none;width:100%;float:center;border:0;"></td></tr></table></td></tr></table></td></tr><?}?>
 <tr><td style="width:100%;border:none;"><table class="mainouter" style="width:100%;border:0;margin-top:3px;cellspacing:0;cellpadding:5;"><td valign="top" width="160px">
 <?show_blocks("l");?></td><td align="center" width="100%" valign="top" class="outer" style="padding-bottom:5px"><?show_blocks('b');show_blocks('c');?>
