@@ -21,8 +21,9 @@ print("</select>");}print("<input type='submit' value='Вперед'></form>");?
 for($i = 1; $i < 10; ++$i){if($i == $letter)print("<b>$i</b>\n");elseif($i!=10)print("<a href='users.php?letter=$i'><b>$i</b></a>\n");} 
 for($i = 97; $i < 123; ++$i){$l = chr($i);$L = chr($i - 32);if($l == $letter)print("<b>$L</b>\n");else print("<a href='users.php?letter=$l'><b>$L</b></a>\n");}
 print("</p>");$q .= ($q ? "&amp;" : "");$page = $_GET['page'];$dt = gmtime() - 300;$dt = sqlesc(get_date_time($dt));
+$res = sql_query("SELECT COUNT(id) FROM users$query") or sqlerr(__FILE__, __LINE__);$arr = mysql_fetch_row($res);$count = $arr[0];
+$perpage = 12;list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "users?".$q);
 $res = sql_query("SELECT u.*, c.name, c.flagpic FROM users AS u LEFT JOIN countries AS c ON c.id = u.country$query ORDER BY added $limit") or sqlerr(__FILE__, __LINE__);
-$count = mysql_num_rows($res);$perpage = 12;list($pagertop, $pagerbottom, $limit) = pager2($perpage, $count, "users?".$q);
 ?></td></tr></table></td></tr></table><?if(mysql_num_rows($res) == 0){
 echo "<table style='background:none;border:none;cellspacing:0;cellpadding:0;margin-top:7px;width:200px;float:center;'><tr>
 <td style='margin-top:7px;width:250px;float:center;border-radius:5px;-webkit-border-radius:5px;-moz-border-radius:5px;-khtml-border-radius:5px;border:1px solid white;display:block;' class='a'>
