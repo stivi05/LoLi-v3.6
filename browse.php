@@ -31,37 +31,46 @@ foreach ($incats as $incat){$all &= isset($_GET["i{$incat['id']}"]);if(isset($_G
 if($all){$wherecatina = array();$whereincatina = array();$addparam = "";}
 if(count($wherecatina) > 1)$wherecatin = implode(",", $wherecatina);elseif(count($wherecatina) == 1)$wherea[] = "category = $wherecatina[0]";
 if(count($whereincatina) > 1)$whereincatin = implode(",", $whereincatina);elseif(count($whereincatina) == 1)$wherea[] = "incategory = $whereincatina[0]";$wherebase = $wherea;
-if(isset($cleansearchstr)){$wherea[] = "t.name LIKE '%".sqlwildcardesc($searchstr)."%'";$addparam .= "search=".urlencode($searchstr)."&amp;";}
+if(isset($cleansearchstr)){$wherea[] = "tg.name LIKE '%".sqlwildcardesc($searchstr)."%'";$addparam .= "search=".urlencode($searchstr)."&amp;";}
 if(isset($cleansearchstr2)){$name = str_replace("'", "%", sqlwildcardesc($tsearchstr));$exp = "(";$explName = explode($exp, $name);
 $wherea[] = "t.name LIKE '".$explName[0]."%'";$addparam .= "tsearch=".urlencode($tsearchstr)."&amp;";}
-if(isset($descrsearchstr)){$wherea[] = "t.keywords LIKE '%".sqlwildcardesc($dsearchstr)."%'";$addparam .= "dsearch=".urlencode($dsearchstr)."&amp;";}
-if(isset($jescrsearchstr)){$wherea[] = "t.description LIKE '%".sqlwildcardesc($jsearchstr)."%'";$addparam .= "jsearch=".urlencode($jsearchstr)."&amp;";}
-if(isset($letter)){$wherea[] = "t.name LIKE '$letter%'";$addparam = "letter=".urlencode($letter)."&amp;";}$where = implode(" AND ", $wherea);
+if(isset($descrsearchstr)){$wherea[] = "tg.keywords LIKE '%".sqlwildcardesc($dsearchstr)."%'";$addparam .= "dsearch=".urlencode($dsearchstr)."&amp;";}
+if(isset($jescrsearchstr)){$wherea[] = "tg.description LIKE '%".sqlwildcardesc($jsearchstr)."%'";$addparam .= "jsearch=".urlencode($jsearchstr)."&amp;";}
+if(isset($letter)){$wherea[] = "tg.name LIKE '$letter%'";$addparam = "letter=".urlencode($letter)."&amp;";}$where = implode(" AND ", $wherea);
 if(isset($wherecatin) && !empty($wherecatin))$where .= ($where ? " AND " : "") . "t.category IN (".$wherecatin.")";
-if(isset($whereincatin) && !empty($whereincatin))$where .= ($where ? " AND " : "") . "t.incategory IN (".$whereincatin.")";
-if($where != "")$where = "WHERE $where";$res = mysql_query("SELECT COUNT(id) FROM torrents AS t $where") or die(mysql_error());$row = mysql_fetch_array($res);
-$count = $row[0];$num_torrents = $count;if(!$count && isset($cleansearchstr)){$wherea = $wherebase;$searcha = explode(" ", $cleansearchstr);$sc = 0;
-foreach($searcha as $searchss){if(strlen($searchss) <= 1)continue;$sc++;if($sc > 5)break;$ssa = array();$ssa[] = "t.name LIKE '%".sqlwildcardesc($searchss)."%'";}
+if(isset($whereincatin) && !empty($whereincatin))$where .= ($where ? " AND " : "") . "t.incategory IN (".$whereincatin.")";if($where != "")$where = "WHERE $where";
+if(!empty($_GET['jsearch']) || !empty($_GET['dsearch']) || !empty($_GET['letter'])){
+$res = mysql_query("SELECT COUNT(*) FROM tags AS tg $where") or die(mysql_error());$row = mysql_fetch_array($res);$count = $row[0];$num_torrents = $count;}else{
+$res = mysql_query("SELECT COUNT(*) FROM torrents AS t $where") or die(mysql_error());$row = mysql_fetch_array($res);$count = $row[0];$num_torrents = $count;}
+if(!$count && isset($cleansearchstr)){$wherea = $wherebase;$searcha = explode(" ", $cleansearchstr);$sc = 0;
+foreach($searcha as $searchss){if(strlen($searchss) <= 1)continue;$sc++;if($sc > 5)break;$ssa = array();$ssa[] = "tg.name LIKE '%".sqlwildcardesc($searchss)."%'";}
 if($sc){$where = implode(" AND ", $wherea);if($where != "")$where = "WHERE $where";$count = $row[0];}}
 if(!$count && isset($cleansearchstr2)){$wherea = $wherebase;$tsearcha = explode(" (", $cleansearchstr2);$sc = 0;
-foreach($tsearcha as $tsearchss){if(strlen($tsearchss) <= 1)continue;$sc++;if($sc > 5)break;$ssa = array();$ssa[] = "t.name LIKE '%".sqlwildcardesc($tsearchss)."%'";}
+foreach($tsearcha as $tsearchss){if(strlen($tsearchss) <= 1)continue;$sc++;if($sc > 5)break;$ssa = array();$ssa[] = "tg.name LIKE '%".sqlwildcardesc($tsearchss)."%'";}
 if($sc){$where = implode(" AND ", $wherea);if($where != "")$where = "WHERE $where";$count = $row[0];}}
 if(!$count && isset($descrsearchstr)){$wherea = $wherebase;$dsearcha = explode(" ", $descrsearchstr);$dsc = 0;
 foreach($dsearcha as $dsearchss){if(strlen($dsearchss) <= 1)continue;$dsc++;
-if($dsc > 5)break;$ssa = array();$ssa[] = "t.keywords COLLATE UTF8_GENERAL_CI LIKE '%".sqlwildcardesc($dsearchss)."%'";}
+if($dsc > 5)break;$ssa = array();$ssa[] = "tg.keywords LIKE '%".sqlwildcardesc($dsearchss)."%'";}
 if($dsc){$where = implode(" AND ", $wherea);if($where != "")$where = "WHERE $where";$count = $row[0];}}
 if(!$count && isset($letter)){$wherea = $wherebase;$letter = explode(" ", $letter);$lsc = 0;
-foreach ($letter as $letter){if(strlen($letter) <= 1)continue;$lsc++;if($lsc > 5)break;$ssa = array();$ssa[] = "t.name COLLATE UTF8_GENERAL_CI LIKE '$letter%'";}
+foreach ($letter as $letter){if(strlen($letter) <= 1)continue;$lsc++;if($lsc > 5)break;$ssa = array();$ssa[] = "tg.name LIKE '$letter%'";}
 if($lsc){$where = implode(" AND ", $wherea);if($where != "")$where = "WHERE $where";$count = $row[0];}} 
 $userid = $CURUSER['id'];$torrentsperpage = $CURUSER["torrentsperpage"];if(!$torrentsperpage)$torrentsperpage = 25;
 if($count){if($addparam != ""){if($pagerlink != ""){if($addparam{strlen($addparam)-1} != ";"){
 $addparam = $addparam."&".$pagerlink;}else{$addparam = $addparam . $pagerlink;}}}else{$addparam = $pagerlink;}
 ////////////////////////////////////////////////	
 list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, "browse.php?" . $addparam);
-$query = "SELECT t.*, c.name AS cat_name, c.image AS cat_pic, i.name AS incat_name, i.image AS incat_pic, u.username, u.class, bookmarks.userid, snatched.userid AS suid 
-FROM torrents AS t LEFT JOIN categories AS c ON t.category = c.id LEFT JOIN incategories AS i ON t.incategory = i.id LEFT JOIN users AS u ON t.owner = u.id 
-LEFT JOIN bookmarks ON bookmarks.userid = $userid AND bookmarks.torrentid = t.id LEFT JOIN snatched ON snatched.userid = $userid AND snatched.torrent = t.id 
-$where $orderby $limit";$res = sql_query($query) or die(mysql_error());}else unset($res);
+////////////////
+if(!empty($_GET['jsearch']) || !empty($_GET['dsearch']) || !empty($_GET['search']) || !empty($_GET['tsearch']) || !empty($_GET['letter'])){
+$query = "SELECT tg.id, t.*, c.name AS cat_name, c.image AS cat_pic, i.name AS incat_name, i.image AS incat_pic, u.username, u.class, bookmarks.userid, 
+snatched.userid AS suid FROM tags tg LEFT JOIN categories AS c ON t.category = c.id LEFT JOIN incategories AS i ON t.incategory = i.id LEFT JOIN users AS u ON t.owner = u.id 
+LEFT JOIN bookmarks ON bookmarks.userid = $userid AND bookmarks.torrentid = tg.id LEFT JOIN snatched ON snatched.userid = $userid AND snatched.torrent = tg.id 
+LEFT JOIN torrents t ON t.id = tg.id $where $orderby $limit";    
+}else{$query = "SELECT t.*, c.name AS cat_name, c.image AS cat_pic, i.name AS incat_name, i.image AS incat_pic, u.username, u.class, bookmarks.userid, 
+snatched.userid AS suid FROM torrents AS t LEFT JOIN categories AS c ON t.category = c.id LEFT JOIN incategories AS i ON t.incategory = i.id LEFT JOIN users AS u ON t.owner = u.id
+LEFT JOIN bookmarks ON bookmarks.userid = $userid AND bookmarks.torrentid = t.id LEFT JOIN snatched ON snatched.userid = $userid AND snatched.torrent = t.id $where $orderby $limit";}
+////////////
+$res = sql_query($query) or die(mysql_error());}else unset($res);
 //////////////////////
 if(isset($cleansearchstr)){stdhead($tracker_lang['search_results_for']." \"$cleansearchstr\"");}elseif(isset($cleansearchstr2)){
 stdhead($tracker_lang['search_results_for']." \"$cleansearchstr2\"");}elseif(isset($descrsearchstr)){stdhead($tracker_lang['search_results_for']." \"$descrsearchstr\"");
