@@ -14,14 +14,16 @@ default: $ascdesc = "DESC";$linkascdesc = "desc";break;}
 $orderby = "ORDER BY t.".$column." ".$ascdesc;$pagerlink = "sort=".intval($_GET['sort'])."&type=".$linkascdesc."&";}else{
 $orderby = "ORDER BY t.added DESC";$pagerlink = "";}
 $addparam = "";$wherea = array();$wherecatina = array();$whereincatina = array();$incldead = 0;
-if(isset($_GET['incldead'])){if($_GET["incldead"] == 1){$addparam .= "incldead=1&amp;";
-if(!isset($CURUSER) || get_user_class() < UC_ADMINISTRATOR)$wherea[] = "banned != 'yes'";}
-elseif($_GET["incldead"] == 3){$addparam .= "incldead=3&amp;";$wherea[] = "free = 'yes'";
-}elseif($_GET["incldead"] == 4){$addparam .= "incldead=4&amp;";$wherea[] = "seeders = 0";
-}elseif($_GET["incldead"] == 5){$addparam .= "incldead=5&amp;";$wherea[] = "free = 'silver'";
-}elseif($_GET["incldead"] == 6){$addparam .= "incldead=6&amp;";$wherea[] = "free = 'no'";
-}elseif($_GET["incldead"] == 7){$addparam .= "incldead=7&amp;";$wherea[] = "free = 'bril'";
-}elseif($_GET["incldead"] == 8){$addparam .= "incldead=8&amp;";$wherea[] = "multitracker = 'yes'";}$incldead = (int)$_GET['incldead'];}
+if(isset($_GET['incldead'])){
+if(!empty($_GET['jsearch']) || !empty($_GET['dsearch']) || !empty($_GET['search']) || !empty($_GET['tsearch']) || !empty($_GET['letter'])){
+if($_GET["incldead"] == 1){$addparam .= "incldead=1&amp;";$wherea[] = "tg.free = 'no'";}elseif($_GET["incldead"] == 2){$addparam .= "incldead=2&amp;";
+$wherea[] = "tg.free = 'silver'";}elseif($_GET["incldead"] == 3){$addparam .= "incldead=3&amp;";$wherea[] = "tg.free = 'yes'";}elseif($_GET["incldead"] == 4){
+$addparam .= "incldead=4&amp;";$wherea[] = "tg.free = 'bril'";}elseif($_GET["incldead"] == 5){$addparam .= "incldead=5&amp;";$wherea[] = "tg.seeders = 0";}
+elseif($_GET["incldead"] == 6){$addparam .= "incldead=6&amp;";$wherea[] = "tg.multitracker = 'yes'";}}else{
+if($_GET["incldead"] == 1){$addparam .= "incldead=1&amp;";$wherea[] = "t.free = 'no'";}elseif($_GET["incldead"] == 2){$addparam .= "incldead=2&amp;";$wherea[] = "t.free = 'silver'";
+}elseif($_GET["incldead"] == 3){$addparam .= "incldead=3&amp;";$wherea[] = "t.free = 'yes'";}elseif($_GET["incldead"] == 4){$addparam .= "incldead=4&amp;";
+$wherea[] = "t.free = 'bril'";}elseif($_GET["incldead"] == 5){$addparam .= "incldead=5&amp;";$wherea[] = "t.seeders = 0";}elseif($_GET["incldead"] == 6){
+$addparam .= "incldead=6&amp;";$wherea[] = "t.multitracker = 'yes'";}}$incldead = (int)$_GET['incldead'];}
 if(isset($_GET['janr']))$category = (int)$_GET["janr"];else $category = 0;
 if(isset($_GET['tip']))$incategory = (int)$_GET["tip"];else $incategory = 0;if(isset($_GET['all']))$all = $_GET["all"];else $all = false;
 if(!$all){if($category){if(!is_valid_id($category))stderr($tracker_lang['error'], "Invalid category ID.");$wherecatina[] = $category;$addparam .= "janr=$category&amp;";}else{$all = True;
@@ -33,13 +35,13 @@ if(count($wherecatina) > 1)$wherecatin = implode(",", $wherecatina);elseif(count
 if(count($whereincatina) > 1)$whereincatin = implode(",", $whereincatina);elseif(count($whereincatina) == 1)$wherea[] = "incategory = $whereincatina[0]";$wherebase = $wherea;
 if(isset($cleansearchstr)){$wherea[] = "tg.name LIKE '%".sqlwildcardesc($searchstr)."%'";$addparam .= "search=".urlencode($searchstr)."&amp;";}
 if(isset($cleansearchstr2)){$name = str_replace("'", "%", sqlwildcardesc($tsearchstr));$exp = "(";$explName = explode($exp, $name);
-$wherea[] = "t.name LIKE '".$explName[0]."%'";$addparam .= "tsearch=".urlencode($tsearchstr)."&amp;";}
+$wherea[] = "tg.name LIKE '".$explName[0]."%'";$addparam .= "tsearch=".urlencode($tsearchstr)."&amp;";}
 if(isset($descrsearchstr)){$wherea[] = "tg.keywords LIKE '%".sqlwildcardesc($dsearchstr)."%'";$addparam .= "dsearch=".urlencode($dsearchstr)."&amp;";}
 if(isset($jescrsearchstr)){$wherea[] = "tg.description LIKE '%".sqlwildcardesc($jsearchstr)."%'";$addparam .= "jsearch=".urlencode($jsearchstr)."&amp;";}
 if(isset($letter)){$wherea[] = "tg.name LIKE '$letter%'";$addparam = "letter=".urlencode($letter)."&amp;";}$where = implode(" AND ", $wherea);
 if(isset($wherecatin) && !empty($wherecatin))$where .= ($where ? " AND " : "") . "t.category IN (".$wherecatin.")";
 if(isset($whereincatin) && !empty($whereincatin))$where .= ($where ? " AND " : "") . "t.incategory IN (".$whereincatin.")";if($where != "")$where = "WHERE $where";
-if(!empty($_GET['jsearch']) || !empty($_GET['dsearch']) || !empty($_GET['letter'])){
+if(!empty($_GET['jsearch']) || !empty($_GET['dsearch']) || !empty($_GET['search']) || !empty($_GET['tsearch']) || !empty($_GET['letter'])){
 $res = mysql_query("SELECT COUNT(*) FROM tags AS tg $where") or die(mysql_error());$row = mysql_fetch_array($res);$count = $row[0];$num_torrents = $count;}else{
 $res = mysql_query("SELECT COUNT(*) FROM torrents AS t $where") or die(mysql_error());$row = mysql_fetch_array($res);$count = $row[0];$num_torrents = $count;}
 if(!$count && isset($cleansearchstr)){$wherea = $wherebase;$searcha = explode(" ", $cleansearchstr);$sc = 0;
@@ -59,13 +61,14 @@ $userid = $CURUSER['id'];$torrentsperpage = $CURUSER["torrentsperpage"];if(!$tor
 if($count){if($addparam != ""){if($pagerlink != ""){if($addparam{strlen($addparam)-1} != ";"){
 $addparam = $addparam."&".$pagerlink;}else{$addparam = $addparam . $pagerlink;}}}else{$addparam = $pagerlink;}
 ////////////////////////////////////////////////	
-list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, "browse.php?" . $addparam);
+list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, "browse_GIT.php?".$addparam);
 ////////////////
 if(!empty($_GET['jsearch']) || !empty($_GET['dsearch']) || !empty($_GET['search']) || !empty($_GET['tsearch']) || !empty($_GET['letter'])){
 $query = "SELECT tg.id, t.*, c.name AS cat_name, c.image AS cat_pic, i.name AS incat_name, i.image AS incat_pic, u.username, u.class, bookmarks.userid, 
-snatched.userid AS suid FROM tags tg LEFT JOIN categories AS c ON t.category = c.id LEFT JOIN incategories AS i ON t.incategory = i.id LEFT JOIN users AS u ON t.owner = u.id 
+snatched.userid AS suid FROM tags tg LEFT JOIN torrents t ON t.id = tg.id LEFT JOIN categories AS c ON t.category = c.id 
+LEFT JOIN incategories AS i ON t.incategory = i.id LEFT JOIN users AS u ON t.owner = u.id 
 LEFT JOIN bookmarks ON bookmarks.userid = $userid AND bookmarks.torrentid = tg.id LEFT JOIN snatched ON snatched.userid = $userid AND snatched.torrent = tg.id 
-LEFT JOIN torrents t ON t.id = tg.id $where $orderby $limit";    
+ $where $orderby $limit";    
 }else{$query = "SELECT t.*, c.name AS cat_name, c.image AS cat_pic, i.name AS incat_name, i.image AS incat_pic, u.username, u.class, bookmarks.userid, 
 snatched.userid AS suid FROM torrents AS t LEFT JOIN categories AS c ON t.category = c.id LEFT JOIN incategories AS i ON t.incategory = i.id LEFT JOIN users AS u ON t.owner = u.id
 LEFT JOIN bookmarks ON bookmarks.userid = $userid AND bookmarks.torrentid = t.id LEFT JOIN snatched ON snatched.userid = $userid AND snatched.torrent = t.id $where $orderby $limit";}
