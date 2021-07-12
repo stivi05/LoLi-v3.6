@@ -141,8 +141,8 @@ PHP - Код</td><td style='background:none;border:0;'></td></tr></table></td></
 <p class='sub'><b>Уменьшить огромную картинку до 360px по высоте</b></p>
 <table class='main' width='100%' border='1' cellspacing='0' cellpadding='5'><tr valign='top'><td width='25%'>Описание:</td>
 <td>В описании картинка высотой 360px (автоматически уменьшает огромные размеры вставляемого изображения)</td></tr><tr valign='top'><td>Синтаксис:</td><td>
-<tt>[th]URL-картинки[/th]</tt></td></tr><tr valign='top'><td>Пример:</td><td><tt>[th]https://hdclub.top/torrents/images/1169.jpg[/th]</tt></td></tr><tr valign='top'>
-<td>Результат:</td><td><a href='<?=$DEFAULTBASEURL?>/torrents/images/10.jpg' class='highslide' onclick='return hs.expand(this)'><img style='margin: 2px 2px 0 0;width:360px;' src='https://hdclub.top/torrents/images/1169.jpg' border='0' alt='https://hdclub.top/torrents/images/1169.jpg' title='https://hdclub.top/torrents/images/1169.jpg'/></a>
+<tt>[th]URL-картинки[/th]</tt></td></tr><tr valign='top'><td>Пример:</td><td><tt>[th]<?=$DEFAULTBASEURL?>/torrents/images/10.jpg[/th]</tt></td></tr><tr valign='top'>
+<td>Результат:</td><td><a href='<?=$DEFAULTBASEURL?>/torrents/images/10.jpg' class='highslide' onclick='return hs.expand(this)'><img style='margin: 2px 2px 0 0;width:360px;' src='<?=$DEFAULTBASEURL?>/torrents/images/10.jpg' border='0' alt='<?=$DEFAULTBASEURL?>/torrents/images/10.jpg' title='<?=$DEFAULTBASEURL?>/torrents/images/10.jpg'/></a>
 </td></tr></table>
 <?end_frame();stdfoot();}else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
 <body style="background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"></body></html><?}?>
