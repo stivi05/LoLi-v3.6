@@ -25,12 +25,10 @@ stdhead($mailbox_name);?><table style="background:none;cellspacing:0;margin-top:
 </script>
 <?if($mailbox != PM_SENTBOX){
 $res = sql_query("SELECT m.*, m.sender_username AS sender_username, m.sender_class AS userclass, s.id AS sfid, r.id AS rfid FROM messages m 
-LEFT JOIN friends r ON r.userid = {$CURUSER["id"]} AND r.friendid = m.receiver 
-LEFT JOIN friends s ON s.userid = {$CURUSER["id"]} AND s.friendid = m.sender 
+LEFT JOIN friends r ON r.userid = {$CURUSER["id"]} AND r.friendid = m.receiver LEFT JOIN friends s ON s.userid = {$CURUSER["id"]} AND s.friendid = m.sender 
 WHERE receiver=".sqlesc($CURUSER['id'])." AND location=".sqlesc($mailbox)." ORDER BY id DESC") or sqlerr(__FILE__,__LINE__);}else{
 $res = sql_query("SELECT m.*, m.receiver_username AS receiver_username, m.receiver_class AS userclass, s.id AS sfid, r.id AS rfid FROM messages m 
-LEFT JOIN friends r ON r.userid = {$CURUSER["id"]} AND r.friendid = m.receiver 
-LEFT JOIN friends s ON s.userid = {$CURUSER["id"]} AND s.friendid = m.sender 
+LEFT JOIN friends r ON r.userid = {$CURUSER["id"]} AND r.friendid = m.receiver LEFT JOIN friends s ON s.userid = {$CURUSER["id"]} AND s.friendid = m.sender 
 WHERE sender=".sqlesc($CURUSER['id'])." AND saved='yes' ORDER BY id DESC") or sqlerr(__FILE__,__LINE__);}
 if(mysql_num_rows($res) == 0){echo("<center><table style='background:none;border:none;cellspacing:0;cellpadding:0;margin-top:7px;width:200px;float:center;'><tr>
 <td style='border-radius:5px;-webkit-border-radius:5px;-moz-border-radius:5px;-khtml-border-radius:5px;border:1px solid white;display:block;' class='a'>
@@ -44,8 +42,7 @@ if($row['receiver'] != 0){$receiver = "<A href=\"user_".$row['receiver']."\">".g
 $id_r = $row['receiver'];$friend = $row['rfid'];
 if($friend && $CURUSER['id'] != $row['receiver']){$receiver .= "&nbsp;<a href=delfriends_$id_r>[удалить из друзей]</a>&nbsp;";
 }elseif($CURUSER['id'] != $row['receiver']){$receiver .= "&nbsp;<a href=addfriends_$id_r>[добавить в друзья]</a>&nbsp;";}}else{$receiver = $tracker_lang['from_system'];}
-$subject = htmlspecialchars_uni($row['subject']);
-if(strlen($subject) <= 0){$subject = $tracker_lang['no_subject'];}
+$subject = htmlspecialchars_uni($row['subject']);if(strlen($subject) <= 0){$subject = $tracker_lang['no_subject'];}
 if($row['unread'] == 'yes' && $mailbox != PM_SENTBOX){
 print ("<table style='background:none;border:none;cellspacing:0;cellpadding:0;margin-top:7px;width:100%;float:center;'><tr>
 <td style='border-radius:5px;-webkit-border-radius:5px;-moz-border-radius:5px;-khtml-border-radius:5px;border:1px solid white;display:block;' class='a'>
