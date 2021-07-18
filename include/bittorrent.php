@@ -2237,4 +2237,4 @@ $retd = unpack("Naction/Ntransid",$ret);if($retd['action'] != 2 || $retd['transi
 if(strlen($ret) < $readlength){throw new ScraperException('Too short scrape response.');}$torrents = array();$index = 8;
 foreach($infohash as $hash){$retd = unpack("Nseeders/Ncompleted/Nleechers",substr($ret,$index,12));$retd['infohash'] = $hash;$torrents[$hash] = $retd;$index = $index + 12;}return($torrents);}}
 /////////  httptscraper OFF ////////////////
-}?>
+function loggedinorreturn($nowarn = false){global $CURUSER;if(!$CURUSER){header("Refresh: 0; url=/");exit();}}}?>
