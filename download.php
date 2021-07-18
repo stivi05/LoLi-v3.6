@@ -26,9 +26,8 @@ stderr2($tracker_lang['error'], "&nbsp;&nbsp;<nobr><font size=\"1\" color=\"red\
 &nbsp;<a href=\"faq#20\"><font color=\"$color\">".number_format($wait - $elapsed)." h</font></a></nobr><br>");}}
 sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".sqlesc($id));
 if(strlen($CURUSER['passkey']) != 32){$CURUSER['passkey'] = md5($CURUSER['username'].get_date_time().$CURUSER['passhash']);
-sql_query("UPDATE users SET passkey=".sqlesc($CURUSER[passkey])." WHERE id=".sqlesc($CURUSER[id]));}
-$dict = bdecode(file_get_contents($fn));
-///////////////////////////////////
+sql_query("UPDATE users SET passkey=".sqlesc($CURUSER[passkey])." WHERE id=".sqlesc($CURUSER[id]));}$dict = bdecode(file_get_contents($fn));
+/*//////////////////////////////////
 if($row['multitracker'] == 'no'){
 	$dict['announce'] = $announce_urls[0]."?passkey=$CURUSER[passkey]"; // change announce url to local
 	$dict['info']['private'] = 1;  // add private tracker flag
@@ -50,8 +49,7 @@ $dict['publisher-url'] = "$DEFAULTBASEURL/users_$owner"; // change publisher-url
 $dict['publisher-url.utf-8'] = "$DEFAULTBASEURL/users_$owner"; // change publisher-url.utf-8
 ///////////////////
 $infohash = sha1(BEncode($dict['info']));
-sql_query("UPDATE torrents SET info_hash = ".sqlesc($infohash)." WHERE id = $id AND info_hash = ''") or sqlerr(__FILE__,__LINE__);
-}
+sql_query("UPDATE torrents SET info_hash = ".sqlesc($infohash)." WHERE id = $id AND info_hash = ''") or sqlerr(__FILE__,__LINE__);}
 if($row['multitracker'] == 'yes'){
 if($CURUSER['multik'] == 'yes'){
     $dict['announce'] = $announce_urls[0]."?passkey=$CURUSER[passkey]"; // change announce url to local
@@ -75,11 +73,12 @@ $dict['publisher-url.utf-8'] = "$DEFAULTBASEURL/users_$owner"; // change publish
 ///////////////////
 $infohash = sha1(BEncode($dict['info']));
 sql_query("UPDATE torrents SET info_hash = ".sqlesc($infohash)." WHERE id = $id AND info_hash = ''") or sqlerr(__FILE__,__LINE__);
-}else{
+}else{*/
 if(!empty($dict['announce-list'])){
 $dict['announce-list'][][0] = $announce_urls[0]."?passkey=$CURUSER[passkey]";
 $dict['announce'] = $announce_urls[0]."?passkey=$CURUSER[passkey]";
-}else{$dict['announce'] = $announce_urls[0]."?passkey=$CURUSER[passkey]";}}}
+}else{$dict['announce'] = $announce_urls[0]."?passkey=$CURUSER[passkey]";}
+//}}
 ////////////////////
 $dict['comment']="$DEFAULTBASEURL/details_$id"; //torrent comment
 $dict['value']['source']="$DEFAULTBASEURL/details_$id"; //torrent comment
@@ -96,6 +95,6 @@ header ("Content-Disposition: attachment; filename=\"$SITENAME"."_$id.torrent\""
 header ("Content-Type: application/x-bittorrent");
 ob_implicit_flush(true);
 print(BEncode($dict));
-$cache = new Memcache();$cache->connect('127.00.000.000', 11211);$cache->delete('user_cache_'.$CURUSER['id']); //прописать ваши данные сервера!//
+$cache = new Memcache();$cache->connect('81.91.178.177', 11211);$cache->delete('user_cache_'.$CURUSER['id']);
 }else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
 <body style="background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"></body></html><?}?>
