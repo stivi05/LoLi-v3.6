@@ -24,10 +24,10 @@ for (;;){if($i >= $sl)return;if($s[$i] == "e")break;$ret = bdec(substr($s, $i));
 $k = $ret["value"];$i += $ret["strlen"];$ss .= $ret["string"];if($i >= $sl)return;$ret = bdec(substr($s, $i));if(!isset($ret) || !is_array($ret))return;
 $v[$k] = $ret;$i += $ret["strlen"];$ss .= $ret["string"];}$ss .= "e";return array('type' => "dictionary", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);}
 /////////////////////
-$mysql_host = "localhost"; // сервер - по умолчанию так и идет, если у вас другое то меняйте, а так - не трогать!
-$mysql_user = "пользователь";  // пользователь базы данных - изменить на ваше!
-$mysql_pass = "пароль";  // пароль пользователя базы данных - изменить на ваше!
-$mysql_db = "база данных";  //  база данных - изменить на ваше!
+$mysql_host = "localhost";
+$mysql_user = "hdclub-tm";
+$mysql_pass = "VeGuSiNkA753AlEnKa159";
+$mysql_db = "amegahd";
 //////////////////////////
 if(!function_exists("htmlspecialchars_uni")){function htmlspecialchars_uni($message){
 $message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
@@ -42,7 +42,7 @@ $BASEURL = $DEFAULTBASEURL;
 $announce_urls = array();
 $announce_urls[] = "$DEFAULTBASEURL/announce.php";
 // SECURITY
-define ('COOKIE_SALT', 'Заполните любым мусором символов 32'); // Заполните любым мусором символов 32, нужно для соли кукисов
+define ('COOKIE_SALT', 'lskdflkijfef7w6438794389tn9cp043t8uc4ppodemoip4o98mr9r8m49rm32404m9x9u4xu9nmcpti9tu9tu94ttum'); // Заполните эту переменную любым мусором, символов эдак 32 - нужно для соли кукисов
 // После смены этих двух параметров всем пользователям надо будет ввести логин пароль
 define ('COOKIE_UID', 'uid'); // Имя куки для userid
 define ('COOKIE_PASSHASH', 'pass'); // Имя куки для пароля
@@ -62,7 +62,7 @@ define ("UC_VLADELEC", 11);
 //////////////////////////
 $announce_interval = 60 * 30;
 $max_dead_torrent_time = 175*86400;
-$SITENAME = 'название вашего сайта'; // название вашего сайта! - Изменить на ваше!
+$SITENAME = 'HDClub';
 $autoclean_interval = 60 * 30;
 $nc = 'no'; // Не пропускать на трекер пиров с закрытыми портами.
 $force_private_tracker = true;
