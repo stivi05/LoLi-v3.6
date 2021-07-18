@@ -189,24 +189,6 @@ CREATE TABLE IF NOT EXISTS `checkcomm` (
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `closesayt`
---
-
-CREATE TABLE IF NOT EXISTS `closesayt` (
-  `name` varchar(4) NOT NULL DEFAULT '',
-  `value` varchar(1) NOT NULL DEFAULT ''
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `closesayt`
---
-
-INSERT INTO `closesayt` (`name`, `value`) VALUES
-('clst', '0');
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `comments`
 --
 
