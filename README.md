@@ -1,4 +1,4 @@
-# LoLi-v3.0
+# LoLi-v3.6
 The modified script TBDeV with caching, a small optimization.
 
 The script for the bundle:
