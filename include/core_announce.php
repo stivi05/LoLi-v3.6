@@ -30,7 +30,8 @@ $mysql_pass = "пароль";  // пароль пользователя базы
 $mysql_db = "база данных";  //  база данных - изменить на ваше!
 //////////////////////////
 if(!function_exists("htmlspecialchars_uni")){function htmlspecialchars_uni($message){
-$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message);$message = str_replace("<","&lt;",$message);$message = str_replace(">","&gt;",$message);
+$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
+$message = str_replace("<","&lt;",$message);$message = str_replace(">","&gt;",$message);
 $message = str_replace("\"","&quot;",$message);$message = str_replace("  ", "&nbsp;&nbsp;", $message);return $message;}}
 // DEFINE IMPORTANT CONSTANTS
 define ('TIMENOW', time());
@@ -43,23 +44,28 @@ $announce_urls[] = "$DEFAULTBASEURL/announce.php";
 // SECURITY
 define ('COOKIE_SALT', 'Заполните любым мусором символов 32'); // Заполните любым мусором символов 32, нужно для соли кукисов
 // После смены этих двух параметров всем пользователям надо будет ввести логин пароль
-define ('COOKIE_UID', 'uid'); // Имя куки для userid - НЕ МЕНЯТЬ!
-define ('COOKIE_PASSHASH', 'pass'); // Имя куки для пароля - НЕ МЕНЯТЬ!
-///// ваши группы-классы пользователей - меняйте на свои! //////////
+define ('COOKIE_UID', 'uid'); // Имя куки для userid
+define ('COOKIE_PASSHASH', 'pass'); // Имя куки для пароля
+// DEFINE TRACKER GROUPS
 define ("UC_USER", 0);
-define ("UC_POWER_USER", 1);
-define ("UC_VIP", 2);
-define ("UC_UPLOADER", 3);
-define ("UC_MODERATOR", 4);
-define ("UC_ADMINISTRATOR", 5);
-define ("UC_SYSOP", 6);
-/////////////////////////////////////////////
+define ("UC_720p", 1);
+define ("UC_1080i", 2);
+define ("UC_1080p", 3);
+define ("UC_UHD", 4);
+define ("UC_VIPS", 5);
+define ("UC_UPLOADER", 6);
+define ("UC_VIP", 7);
+define ("UC_MODERATOR", 8);
+define ("UC_ADMINISTRATOR", 9);
+define ("UC_SYSOP", 10);
+define ("UC_VLADELEC", 11);
+//////////////////////////
 $announce_interval = 60 * 30;
 $max_dead_torrent_time = 175*86400;
 $SITENAME = 'название вашего сайта'; // название вашего сайта! - Изменить на ваше!
-$autoclean_interval = 60 * 30; // Обновление чистки сайта - раз в пол часа
+$autoclean_interval = 60 * 30;
 $nc = 'no'; // Не пропускать на трекер пиров с закрытыми портами.
-$force_private_tracker = true; // частный трекер или нет - стоит - частный
+$force_private_tracker = true;
 /////////////////////
 function err($msg){benc_resp(array("failure reason" => array('type' => 'string', 'value' => $msg)));exit();}
 function benc_resp($d){benc_resp_raw(benc(array('type' => 'dictionary', 'value' => $d)));}
