@@ -61,7 +61,7 @@ $userid = $CURUSER['id'];$torrentsperpage = $CURUSER["torrentsperpage"];if(!$tor
 if($count){if($addparam != ""){if($pagerlink != ""){if($addparam{strlen($addparam)-1} != ";"){
 $addparam = $addparam."&".$pagerlink;}else{$addparam = $addparam . $pagerlink;}}}else{$addparam = $pagerlink;}
 ////////////////////////////////////////////////	
-list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, "browse_GIT.php?".$addparam);
+list($pagertop, $pagerbottom, $limit) = pager2($torrentsperpage, $count, "browse_GIT.php?".$addparam);
 ////////////////
 if(!empty($_GET['jsearch']) || !empty($_GET['dsearch']) || !empty($_GET['search']) || !empty($_GET['tsearch']) || !empty($_GET['letter'])){
 $query = "SELECT tg.id, t.*, c.name AS cat_name, c.image AS cat_pic, i.name AS incat_name, i.image AS incat_pic, u.username, u.class, bookmarks.userid, 
