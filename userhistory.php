@@ -34,7 +34,7 @@ print ("<a href='user_".$userid."' class='altlink_white'><b>".get_user_class_col
 print ("</center></td></tr><tr><td style='width:150;background:none;'></td></tr></table></td><td width='100%' style='padding:10px;border-radius:10px;border:0;' class='b'>
 <table style='background:none;width:100%;border:0;'><tr><td class=\"zaliwka\" style='font-family:tahoma;color:#FFFFFF;colspan:16;font-size:14px;border:0;border-radius:5px;'>
 <div style='font-size:14px;float:left;border:0;'>&nbsp;&nbsp;&nbsp;&nbsp;
-.:: ".($torrent?("<a href='details_$torrentid&viewcomm=".$arr["id"]."#comm".$arr["id"]."'><font color='white'><b>$torrent</b></font></a>"):" [Удален] ")." ::.</div>");
+.:: ".($torrent?("<a href='details.php?id=$torrentid&viewcomm=".$arr["id"]."#comm".$arr["id"]."'><font color='white'><b>$torrent</b></font></a>"):" [Удален] ")." ::.</div>");
 print ("<div style='font-family:tahoma;font-size:11px;font-weight:10;color:#FFFFFF;margin-left:10px;letter-spacing:0;text-align:left;float:right;border:0;'>
 ".nicetime($arr["added"], true)."&nbsp;&nbsp;&nbsp;
 </div></td></tr><tr><td style='background:none;width:100%;border:0;'>");
