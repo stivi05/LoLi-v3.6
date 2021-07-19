@@ -1,4 +1,4 @@
-<?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER && get_user_class() >= UC_1080p){
+<?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER && get_user_class() >= UC_POWER_USER){
 parked();$userid = (isset($_GET["id"]) ? intval($_GET["id"]):0);$action = $_GET["action"];
 if(!is_valid_id($userid) || empty($userid) || empty($_GET["action"])) stderr2($tracker_lang['error'], "<center>ID указан не верно</center><html><head><meta http-equiv='refresh' content='4;url=/'></head></html>");
 if($action == "viewcomments"){$cache = new Memcache();$cache->connect('127.0.0.1', 11211); // IP вашего сервера и порт Мемкеша
