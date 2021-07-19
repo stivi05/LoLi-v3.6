@@ -349,15 +349,8 @@ $sr = floor($sr * 1000) / 1000;$sr = "<font color=\"" . get_ratio_color($sr) . "
 <img src="pic/reyting.png" title="Рейтинг">&nbsp;&nbsp;<b>Рейтинг:</b> <?=$sr?><br><br>
 <img src="pic/bonus.png" title="Бонус">&nbsp;&nbsp;<b>Бонус:</b> <?=$user["bonus"]?><br><br>
 <img src="pic/coments.png" title="Комментариев Релизов">&nbsp;&nbsp;<b>Комментариев Релизов:</b>
-<? if($user["comreliz"] && (($user["id"] == $CURUSER["id"]) || get_user_class() >= UC_1080p)){?>
-<a href="usercom_<?=$id?>"><?=$user["comreliz"];?></a><?}else{?><?=$user["comreliz"];?><?}?><br><br>
-<img src="pic/chats.png" title="Комментариев на Форуме">&nbsp;&nbsp;<b>Комментариев на Форуме:</b>
-<? if($user["comforum"] && (($user["id"] == $CURUSER["id"]) || get_user_class() >= UC_1080p)){?>
-<a href="fcom_<?=$id?>"><?=$user["comforum"];?></a><?}else{?><?=$user["comforum"];?><?}?><br><br>
-<img src="pic/forumicons/forum_new.gif" title="Тем на Форуме">&nbsp;&nbsp;<b>Тем на Форуме:</b>
-<? if($user["topicforum"] && (($user["id"] == $CURUSER["id"]) || get_user_class() >= UC_1080p)){?>
-<a href="forumsearch.php?id=<?=$id?>"><?=$user["topicforum"];?></a><?}else{?><?=$user["topicforum"];?><?}?>
-<br><br><img src="pic/shtraf_sm.png" title="Штраф">&nbsp;&nbsp;<b>Штраф:</b>&nbsp;&nbsp;<font color='red'><b><?=$user["premiya"];?></b></font>
+<? if($user["comreliz"] && (($user["id"] == $CURUSER["id"]) || get_user_class() >= UC_POWER_USER)){?>
+<a href="userhistory.php?action=viewcomments&id=<?=$id?>"><?=$user["comreliz"];?></a><?}else{?><?=$user["comreliz"];?><?}?>
 <br><br><img src="pic/like.png" border="0">&nbsp;<b>Поблагодарили юзера:</b> <?=$user['simpaty'];?> раз
 <?if ($user["website"]){?><br><br><img src="pic/sayt.png" title="Сайт">&nbsp;&nbsp;<b>Сайт:</b>&nbsp;&nbsp;<a href="<?=$user['website']?>" target="_blank"><b><?=$user['website']?></b></a><?}?>
 <?if($addr)?><?=$addr?><?if(get_user_class() >= UC_MODERATOR){if ($user["name"] != ""){?><br><br><img src="pic/class_success.gif" title="Откуда Юзер">&nbsp;&nbsp;<b>Откуда Юзер:</b>&nbsp;<?=$user["name"]?><?}}$dt = gmtime() - 300;$dt = sqlesc(get_date_time($dt));

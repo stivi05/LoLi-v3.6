@@ -1,7 +1,9 @@
 <?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER && get_user_class() >= UC_1080p){
 parked();$userid = (isset($_GET["id"]) ? intval($_GET["id"]):0);$action = $_GET["action"];
 if(!is_valid_id($userid) || empty($userid) || empty($_GET["action"])) stderr2($tracker_lang['error'], "<center>ID указан не верно</center><html><head><meta http-equiv='refresh' content='4;url=/'></head></html>");
-if($action == "viewcomments"){global $CacheBlockus;$_cacheu = "user_".$userid.".cache";$arus = $CacheBlockus->Readus($_cacheu);
+if($action == "viewcomments"){$cache = new Memcache();$cache->connect('127.0.0.1', 11211); // IP вашего сервера и порт Мемкеша
+$row = array();if(!$row = $cache->get('user_cache_'.$userid)){$res = mysql_query('SELECT * FROM users WHERE id = '.sqlesc($userid)) or err('There is no user with this ID');
+$row = mysql_fetch_array($res);$cache->set('user_cache_'.$userid, $row, MEMCACHE_COMPRESSED, 1800);}$arus = $row;
 if($arus["id"] != $userid) stderr2("<center>Error!</center>", "<center>Нет пользователя с таким ID: $id.</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
 $torrentcomments = $arus["comreliz"];
 if($torrentcomments == 0){stderr2($tracker_lang['error'], "<center>Комментарии не найдены</center><html><head><meta http-equiv='refresh' content='4;url=/'></head></html>");}else{
