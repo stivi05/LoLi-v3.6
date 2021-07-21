@@ -1,4 +1,5 @@
-<?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER){global $CacheBlockus;
+<?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER){
+$cache = new Memcache();$cache->connect('127.0.0.1', 11211); // IP вашего сервера и порт Мемкеша
 define('PM_DELETED',0); // Message was deleted
 define('PM_INBOX',1); // Message located in Inbox for reciever
 define('PM_SENTBOX',-1); // GET value for sent box
@@ -72,8 +73,8 @@ echo("</font>&nbsp;<font size='1' color='grey'><img src='pic/icon_topic.gif' bor
 </td><td style='background:none;border:none;width:80px;float:right;'>
 <input type="submit" name="markread" title="<?=$tracker_lang['mark_as_read'];?>" value="<?=$tracker_lang['mark_read'];?>" onClick="return confirm('<?=$tracker_lang['sure_mark_read'];?>')">
 </td></tr></table><?}?></td></tr></table></form></td></tr></table><?stdfoot();}
-// конец просмотр почтового ящика
-// начало просмотр тела сообщения
+// конец просмотр почтового ящика ///////
+// начало просмотр тела сообщения ///////
 if($action == "viewmessage"){
 $pm_id = (int) $_GET['id'];if(!$pm_id){stderr2($tracker_lang['error'], "У вас нет прав для просмотра этого сообщения.");}
 // Get the message
@@ -86,19 +87,12 @@ if(!$message['sender_avatar']){$avatar=("<a href='user_".$message['sender']."'><
 $avatar=("<a href='user_".$message['sender']."'><img width='100' border='0' src='".$message['sender_avatar']."' title='".$message['sender_username']."'></a><br>
 <b>".get_user_class_color($message["sender_class"], $message['sender_username'])."</b>");}
 $sender = $avatar;$senderr = "<a href='user_".$message['receiver']."'>".get_user_class_color($message["receiver_class"], $message['receiver_username'])."</a>";
-$reply = "";
-$from = "Кому:";
-$froms = "От кого:";
-$fromsa = "<tr><td class=\"zaliwka\" style='background:#5F9EA0;color:#FFFFFF;colspan:14;font-family:cursive;font-weight:bold;font-size:14px;text-align:center;border:0;float:center;cellpadding:0;cellspacing:0;width:100%;border-radius:5px;'>
+$reply = "";$from = "Кому:";$froms = "От кого:";$fromsa = "<tr><td class=\"zaliwka\" style='background:#5F9EA0;color:#FFFFFF;colspan:14;font-family:cursive;font-weight:bold;font-size:14px;text-align:center;border:0;float:center;cellpadding:0;cellspacing:0;width:100%;border-radius:5px;'>
 <b>Вы сейчас читаете свое сообщение, отправленное для: ".$senderr."</b></td></tr>";
 }else{
-$from = "От кого:";
-$froms = "Кому:";
-$fromsa = "";
-if ($message['sender'] == 0 || $message['sender'] == 2){
+$from = "От кого:";$froms = "Кому:";$fromsa = "";if ($message['sender'] == 0 || $message['sender'] == 2){
 $sender = "<a href='user_2'><img width='100' border='0' src='pic/avatar/2.jpg' title='System'></a><br><b>".get_user_class_color(6, 'System')."</b>";
-$senderr = "<a href='user_2'><b>".get_user_class_color(6, 'System')."</b></a>";
-$reply = "";
+$senderr = "<a href='user_2'><b>".get_user_class_color(6, 'System')."</b></a>";$reply = "";
 }else{
 if(!$message['sender_avatar']){$avatar=("<a href='user_".$message['sender']."'><img width='100' border='0' src='pic/default_avatar.gif' title='".$message['sender_username']."'></a>
 <br><b>".get_user_class_color($message["sender_class"], $message[sender_username])."</b>");}else{
@@ -113,9 +107,7 @@ $subject = htmlspecialchars_uni($message['subject']);
 if (strlen($subject) <= 0){$subject = "Без темы";}
 // Mark message unread
 if ($message['unread'] == "yes"){sql_query("UPDATE messages SET unread='no' WHERE id=".sqlesc($pm_id)." AND receiver=".sqlesc($CURUSER['id'])." LIMIT 1");
-sql_query("UPDATE users SET newmess = IF(newmess > 0, newmess - 1, 0) WHERE id=".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
-$_cacheu = "user_".$CURUSER['id'].".cache";$resus = sql_query("SELECT * FROM users WHERE id = ".$CURUSER['id']);$rowus = mysql_fetch_array($resus);
-$CacheBlockus->Writeus($_cacheu, $rowus);}
+sql_query("UPDATE users SET newmess = IF(newmess > 0, newmess - 1, 0) WHERE id=".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);$cache->delete('user_cache_'.$CURUSER['id']);}
 // Display message
 stdhead("$subject");?><table style='background:none;' width='98%' border='0' cellspacing='0' cellpadding='3'><?
 print("<tr valign='top'><td style='padding:10px;width:150;background:none;'><table style='background:none;'border='0' cellspacing='0'><tr>
@@ -134,10 +126,9 @@ print"<div align='right' border='0'><a href=\"message.php?action=sendmessage&amp
 </div></td></tr>".$fromsa."<tr><td style='background:none;width:100%;border:0;'>";}
 print("<div style='margin-left:20px;border:0;'><br>".format_comment($message['msg'])."</div><div id=\"cleft\" border='0'></div></td></tr></table></td></tr></table>");
 stdfoot();}
-// конец просмотр тела сообщения
-// начало просмотр посылка сообщения
-if($action == "sendmessage"){
-if($CURUSER["lsoff"] == 'no'){ 
+// конец просмотр тела сообщения /////////
+// начало просмотр посылка сообщения /////
+if($action == "sendmessage"){if($CURUSER["lsoff"] == 'no'){ 
 stdhead("Личное Сообщение");?><table style='background:none;border:none;cellspacing:0;cellpadding:0;margin-top:7px;width:200px;float:center;'><tr>
 <td style='border-radius:5px;-webkit-border-radius:5px;-moz-border-radius:5px;-khtml-border-radius:5px;border:1px solid white;display:block;' class='a'>
 <center><font style='font-family:tahoma;font-size:14px;font-weight:10;color:red;'><b>Вам запрещено отправлять ЛС!</b></font></center></td></tr></table>
@@ -156,29 +147,48 @@ stdhead("Отправка сообщения", false);?><table style="background
 <td align="center" style="background:none;width:100%;float:center;border:0;"><form name='message' method='post' action='message'>
 <input type='hidden' name='action' value='takemessage'>
 <TR><TD style="background:none;width:100%;border:0;" colspan="2"><B>Тема:&nbsp;&nbsp;</B><INPUT name="subject" type="text" size="60" value="<?=$subject?>" maxlength="255"></TD>
-</TR><tr><td<?=$replyto?" colspan=2":""?> style="background:none;width:100%;border:0;"><?textbbcode2("message","msg","$body");?>
+</TR><tr><td<?=$replyto?" colspan=2":""?> style="background:none;width:100%;border:0;"><?
+print(textbbcode("message","msg","$body")."<br>
+<table width='100%' style='background:none;border:none;' cellpadding='5' cellspacing='0'>
+<img class='editorbutton' OnClick=\"AddSmile(' :ah:')\" title='ah' height='40' border='0' src='pic/smilies/ah.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :angry2:')\" title='angry2' height='40' border='0' src='pic/smilies/angry2.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :bah:')\" title='bah' height='40' border='0' src='pic/smilies/bah.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :bye:')\" title='bye' height='40' border='0' src='pic/smilies/bye.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :cool2:')\" title='cool' height='40' border='0' src='pic/smilies/cool.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :cry:')\" title='cry1' height='40' border='0' src='pic/smilies/cry1.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :cry2:')\" title='cry2' height='40' border='0' src='pic/smilies/cry2.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :cry3:')\" title='cry3' height='40' border='0' src='pic/smilies/cry3.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :good:')\" title='good' height='40' border='0' src='pic/smilies/good.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :haha:')\" title='haha' height='40' border='0' src='pic/smilies/haha.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :happy:')\" title='happy' height='40' border='0' src='pic/smilies/happy.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :hehe:')\" title='hehe' height='40' border='0' src='pic/smilies/hehe.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :hi2:')\" title='hi' height='40' border='0' src='pic/smilies/hi.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :hm:')\" title='hmm' height='40' border='0' src='pic/smilies/hmm.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :huh2:')\" title='huh' height='40' border='0' src='pic/smilies/huh.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :dead:')\" title='imdead' height='40' border='0' src='pic/smilies/imdead.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :khekhe:')\" title='khekhe' height='40' border='0' src='pic/smilies/khekhe.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :roar:')\" title='roar' height='40' border='0' src='pic/smilies/roar.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :stfu:')\" title='stfu' height='40' border='0' src='pic/smilies/stfu.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :tired:')\" title='tired1' height='40' border='0' src='pic/smilies/tired1.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :uhuh:')\" title='uhuh' height='40' border='0' src='pic/smilies/uhuh.gif'/>
+<img class='editorbutton' OnClick=\"AddSmile(' :wat:')\" title='wat1' height='40' border='0' src='pic/smilies/wat1.gif'/></table><br>");?>
 </td></tr><tr><td style="background:none;width:100%;border:0;" align=center><?if($replyto){?>
 <input type=checkbox name='delete' value='yes' <?=$CURUSER['deletepms'] == 'yes'?"checked":""?>>Удалить сообщение после ответа&nbsp;&nbsp;&nbsp;
 <input type='hidden' name='origmsg' value='<?=$replyto?>'><?}?>
 <input type='checkbox' name='save' value='yes' <?=$CURUSER['savepms'] == 'yes'?"checked":""?>>Сохранить сообщение в отправленных&nbsp;&nbsp;&nbsp;
-<input type='hidden' name='receiver' value='<?=$receiver?>'><input type='submit' value="Отправить!" class='btn'></td></tr></form></td></tr></table></td></tr></table>
-<?stdfoot();}}
-///////////// конец Отправка сообщения ////////////////////
-/////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-// начало прием посланного сообщения
+<input type='hidden' name='receiver' value='<?=$receiver?>'><input type='submit' value="Отправить!" class='btn'></td></tr></form></td></tr></table></td></tr></table><?stdfoot();}}
+///////////// конец Отправка сообщения //////////
+// начало прием посланного сообщения ///////
 if($action == 'takemessage'){
 $receiver = $_POST["receiver"];$origmsg = $_POST["origmsg"];$save = $_POST["save"];$returnto = $_POST["returnto"];
 if(!is_valid_id($receiver) || ($origmsg && !is_valid_id($origmsg)))stderr2($tracker_lang['error'],"Неверный ID");
 $msg = trim($_POST["msg"]);if(!$msg)stderr2($tracker_lang['error'],"Пожалуйста введите сообщение!");
 $subject = trim($_POST['subject']);if(!$subject)stderr2($tracker_lang['error'],"Пожалуйста введите тему сообщения!");
-$save = ($save == 'yes') ? "yes" : "no";$_cacheus = "user_".$receiver.".cache";$user = $CacheBlockus->Readus($_cacheus);
-if(!$_cacheus) stderr2("<center>Error!</center>", "<center>Нет пользователя с таким ID $id.</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
-//Make sure recipient wants this message
+$save = ($save == 'yes') ? "yes" : "no";$user = $cache->get('user_cache_'.$receiver);
+if(!$user) stderr2("<center>Error!</center>", "<center>Нет пользователя с таким ID $id.</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
 if($user["parked"] == "yes")stderr2($tracker_lang['error'], "Этот аккаунт припаркован.");
 ///////////////////////////////
-if(get_user_class() < UC_MODERATOR){
-if($user["acceptpms"] == "yes"){
+if(get_user_class() < UC_MODERATOR){if($user["acceptpms"] == "yes"){
 $res2 = sql_query("SELECT * FROM blocks WHERE userid=$receiver AND blockid=".$CURUSER["id"]) or sqlerr(__FILE__, __LINE__);
 if(mysql_num_rows($res2) == 1)sttderr("Отклонено", "Этот пользователь добавил вас в черный список.");}elseif($user["acceptpms"] == "friends"){
 $res2 = sql_query("SELECT * FROM friends WHERE userid=$receiver AND friendid=".$CURUSER["id"]) or sqlerr(__FILE__, __LINE__);
@@ -190,29 +200,21 @@ sql_query("INSERT INTO messages (sender, sender_class, sender_username, sender_a
 saved) VALUES (".$CURUSER["id"].", ".$CURUSER["class"].", ".sqlesc($CURUSER["username"]).", ".sqlesc($CURUSER["avatar"]).", $receiver, $receiver_class, 
 ".sqlesc($receiver_username).", ".sqlesc($receiver_avatar).", '".get_date_time()."', ".sqlesc($msg).", ".sqlesc($subject).", ".sqlesc($save).")") or sqlerr(__FILE__, __LINE__);
 sql_query("UPDATE users SET newmess = newmess + 1 WHERE id=".sqlesc($receiver)) or sqlerr(__FILE__, __LINE__);
-$_cacheu = "user_".$receiver.".cache";$resus = sql_query("SELECT * FROM users WHERE id = ".$receiver);$rowus = mysql_fetch_array($resus);$CacheBlockus->Writeus($_cacheu, $rowus);
-$sended_id = mysql_insert_id();$delete = $_POST["delete"];
+$cache->delete('user_cache_'.$receiver);$sended_id = mysql_insert_id();$delete = $_POST["delete"];
 if($origmsg){if($delete == "yes"){$res = sql_query("SELECT * FROM messages WHERE id=$origmsg") or sqlerr(__FILE__, __LINE__);
 if(mysql_num_rows($res) == 1){$arr = mysql_fetch_assoc($res);
 if($arr["receiver"] != $CURUSER["id"])stderr2($tracker_lang['error'],"Вы пытаетесь удалить не свое сообщение!");
 if($arr["saved"] == "no"){sql_query("DELETE FROM messages WHERE id=$origmsg") or sqlerr(__FILE__, __LINE__);}elseif($arr["saved"] == "yes")
 sql_query("UPDATE messages SET unread = 'no', location = '0' WHERE id=$origmsg") or sqlerr(__FILE__, __LINE__);}
 sql_query("UPDATE users SET newmess = IF(newmess > 0, newmess - 1, 0) WHERE id=".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
-$_cacheu = "user_".$CURUSER['id'].".cache";$resus = sql_query("SELECT * FROM users WHERE id = ".$CURUSER['id']);$rowus = mysql_fetch_array($resus);
-$CacheBlockus->Writeus($_cacheu, $rowus);}
-if(!$returnto)$returnto = "$DEFAULTBASEURL/message";}
+$cache->delete('user_cache_'.$CURUSER['id']);}if(!$returnto)$returnto = "$DEFAULTBASEURL/message";}
 if($returnto){header("Location: message");die;}else{header ("Refresh: 2; url=message");stderr2($tracker_lang['success'] , "Сообщение было успешно отправлено!");}}
-// конец прием посланного сообщения
-////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-//начало перемещение, помечание как прочитанного
+// конец прием посланного сообщения /////
+//начало перемещение, помечание как прочитанного ///////
 if($action == "moveordel"){$pm_id = (int) $_POST['id'];$pm_box = (int) $_POST['box'];$pm_messages = $_POST['messages'];if ($_POST['move']){if($pm_id){
-// Move a single message
 @sql_query("UPDATE messages SET location=".sqlesc($pm_box).", saved = 'yes' WHERE id=".sqlesc($pm_id)." AND receiver=".$CURUSER['id']." LIMIT 1");}else{
-// Move multiple messages
 @sql_query("UPDATE messages SET location=".sqlesc($pm_box).", saved = 'yes' 
 WHERE id IN (".implode(", ", array_map("sqlesc", array_map("intval", $pm_messages))).') AND receiver='.$CURUSER['id']);}
-// Check if messages were moved
 if(@mysql_affected_rows() == 0){stderr2($tracker_lang['error'], "Не возможно переместить сообщения!");}header("Location: mess_in");exit();
 }elseif($_POST['delete']){if($pm_id){
 // Delete a single message
@@ -222,9 +224,7 @@ if($message['receiver'] == $CURUSER['id'] && $message['saved'] == 'no'){sql_quer
 }elseif($message['receiver'] == $CURUSER['id'] && $message['saved'] == 'yes'){sql_query("UPDATE messages SET location=0 WHERE id=".sqlesc($pm_id)) or sqlerr(__FILE__,__LINE__);}
 elseif($message['sender'] == $CURUSER['id'] && $message['location'] != PM_DELETED){sql_query("UPDATE messages SET saved='no' WHERE id=".sqlesc($pm_id)) or sqlerr(__FILE__,__LINE__);}
 sql_query("UPDATE users SET newmess = IF(newmess > 0, newmess - 1, 0) WHERE id=".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
-$_cacheu = "user_".$CURUSER['id'].".cache";$resus = sql_query("SELECT * FROM users WHERE id = ".$CURUSER['id']);$rowus = mysql_fetch_array($resus);
-$CacheBlockus->Writeus($_cacheu, $rowus);
-}else{
+$cache->delete('user_cache_'.$CURUSER['id']);}else{
 // Delete multiple messages
 if(is_array($pm_messages))foreach ($pm_messages as $id){
 $res = sql_query("SELECT * FROM messages WHERE id=".sqlesc((int) $id));$message = mysql_fetch_assoc($res);
@@ -236,33 +236,24 @@ elseif($message['receiver'] == $CURUSER['id'] && $message['saved'] == 'yes'){
 sql_query("UPDATE messages SET location=0 WHERE id=".sqlesc((int) $id)) or sqlerr(__FILE__,__LINE__);
 }elseif($message['sender'] == $CURUSER['id'] && $message['location'] != PM_DELETED){
 sql_query("UPDATE messages SET saved='no' WHERE id=".sqlesc((int) $id)) or sqlerr(__FILE__,__LINE__);}
-sql_query("UPDATE users SET newmess = IF(newmess > 0, newmess - 1, 0) WHERE id=".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
-$_cacheu = "user_".$CURUSER['id'].".cache";$resus = sql_query("SELECT * FROM users WHERE id = ".$CURUSER['id']);$rowus = mysql_fetch_array($resus);
-$CacheBlockus->Writeus($_cacheu, $rowus);}}
+sql_query("UPDATE users SET newmess = IF(newmess > 0, newmess - 1, 0) WHERE id=".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);$cache->delete('user_cache_'.$CURUSER['id']);}}
 // Check if messages were moved
 if(@mysql_affected_rows() == 0){stderr2($tracker_lang['error'],"Сообщение не может быть удалено!");
 }else{header("Location: message");exit();}}elseif ($_POST["markread"]){
 //помечаем одно сообщение
 if($pm_id){sql_query("UPDATE messages SET unread='no' WHERE id = ".sqlesc($pm_id)) or sqlerr(__FILE__,__LINE__);
-sql_query("UPDATE users SET newmess = IF(newmess > 0, newmess - 1, 0) WHERE id=".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
-$_cacheu = "user_".$CURUSER['id'].".cache";$resus = sql_query("SELECT * FROM users WHERE id = ".$CURUSER['id']);$rowus = mysql_fetch_array($resus);
-$CacheBlockus->Writeus($_cacheu, $rowus);}
+sql_query("UPDATE users SET newmess = IF(newmess > 0, newmess - 1, 0) WHERE id=".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);$cache->delete('user_cache_'.$CURUSER['id']);}
 //помечаем множество сообщений
 else{if(is_array($pm_messages))foreach ($pm_messages as $id){
 $res = sql_query("SELECT * FROM messages WHERE id=".sqlesc((int) $id));$message = mysql_fetch_assoc($res);
 sql_query("UPDATE messages SET unread='no' WHERE id = ".sqlesc((int) $id)) or sqlerr(__FILE__,__LINE__);
-sql_query("UPDATE users SET newmess = IF(newmess > 0, newmess - 1, 0) WHERE id=".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);
-$_cacheu = "user_".$CURUSER['id'].".cache";$resus = sql_query("SELECT * FROM users WHERE id = ".$CURUSER['id']);$rowus = mysql_fetch_array($resus);
-$CacheBlockus->Writeus($_cacheu, $rowus);}}
+sql_query("UPDATE users SET newmess = IF(newmess > 0, newmess - 1, 0) WHERE id=".sqlesc($CURUSER['id'])) or sqlerr(__FILE__, __LINE__);$cache->delete('user_cache_'.$CURUSER['id']);}}
 // Проверяем, были ли помечены сообщения
 if(@mysql_affected_rows() == 0){header ("Refresh: 4; url=message");stderr2($tracker_lang['error'], "<center>Сообщение не может быть помечено как прочитанное!</center>");
 }else{header("Location: mess_in");exit();}}stderr2($tracker_lang['error'],"Нет действия.");}
-//конец перемещение, помечание как прочитанного
-//////////////////////////////////////////////////
-//////////////////////////////////////////
-//начало удаление сообщения
-if($action == "deletemessage"){
-$pm_id = (int) $_GET['id'];
+//конец перемещение, помечание как прочитанного ///////
+//начало удаление сообщения //////////
+if($action == "deletemessage"){$pm_id = (int) $_GET['id'];
 // Delete message
 $res = sql_query("SELECT * FROM messages WHERE id=".sqlesc($pm_id)) or sqlerr(__FILE__,__LINE__);
 if(!$res){stderr2($tracker_lang['error'],"Сообщения с таким ID не существует.");}
