@@ -54,8 +54,6 @@ $hide_invayted = ($_POST["hide_invayted"] != "" ? "yes" : "no");$updateset[] = "
 $hide_invayt = ($_POST["hide_invayt"] != "" ? "yes" : "no");$updateset[] = "invayt = '$hide_invayt'";
 //////////////////////////////////
 $hide_bonusss = ($_POST["hide_bonusss"] != "" ? "yes" : "no");$updateset[] = "bonusss = '$hide_bonusss'";
-////////////////////////////////////
-$multikoff = ($_POST["multikoff"] != "" ? "yes" : "no");$updateset[] = "multik = '$multikoff'";
 ////////////// PASSKEY MOD //////////////////
 if ($_POST['resetpasskey']) $updateset[] = "passkey=''";
 $updateset[] = "passkey_ip = ".($_POST["passkey_ip"] != "" ? sqlesc(getip()) : "''");$urladd = "";$action = "usercp_security";}
@@ -98,6 +96,6 @@ if(!sent_mail($email, "$thisdomain profile change confirmation", $body, false)){
 write_log("Проблема с отправкой письма на адрес $email", "FF0000", "error");$action = "usercp_security&mailsent=1";}else{$action = "usercp_security&mailsent=1";}}
 mysql_query("UPDATE users SET ".implode(",", $updateset)." WHERE id = ".$CURUSER["id"]) or sqlerr(__FILE__,__LINE__);
 ////////////////////////
-$flist = $rootpath."include/user_cache/user_".$CURUSER["id"].".cache";if(file_exists($flist)){unlink($rootpath."include/user_cache/user_".$CURUSER["id"].".cache");}
+$cache = new Memcache();$cache->connect('127.0.0.1', 11211);$cache->delete('user_cache_'.$CURUSER['id']);
 header("Location: $action");}}else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
 <body style="background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"></body></html><?}?>
