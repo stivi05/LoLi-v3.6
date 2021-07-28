@@ -69,7 +69,6 @@ define ("UC_VLADELEC", 11);
 $max_torrent_size = 1024 * 1024 * 6;
 $announce_interval = 60 * 30;
 $signup_timeout = 86400 * 3;
-$minvotes = 1;
 $max_dead_torrent_time = 175*86400;
 $maxloginattempts = 3; // Максимальное количество попыток входа 
 $maxloginattemptss = 3; // Максимальное количество попыток подбора ответа на секретный вопрос
@@ -78,12 +77,6 @@ $SITEEMAIL = 'емайл вашего сайта'; //прописать ваши
 $SITENAME = 'название вашего сайта'; //прописать ваши данные!//
 $autoclean_interval = 60 * 30;
 $pic_base_url = 'pic';
-$allowed_types = array( 
-  "image/gif" => "gif", 
-  "image/pjpeg" => "jpg", 
-  "image/jpeg" => "jpg", 
-  "image/jpg" => "jpg", 
-  "image/png" => "png");
 $maxavatarsize = 5242880; //100 kB 
 $maxfilesize = 5242880; // 5mb
 $max_image_size = 5242880; // 5mb
@@ -104,10 +97,9 @@ $force_private_tracker = true;
 $admin_email = 'емайл админа сайта'; // Почта администратора трекера, для формы обратной связи //прописать ваши данные!//
 $website_name = 'Название сайта'; // Краткое имя сайта, для формы обратной связи //прописать ваши данные!//
 $head[] = '<meta http-equiv="imagetoolbar" content="no" /><meta name="resource-type" content="document" /><meta name="distribution" content="global" />
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9" /><meta name="copyright" content="Ваш Сайт" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9" /><meta name="copyright" content="ВАШ_САЙТ" />
 <meta name="keywords" content="Фильмы, Мультфильмы, Сериалы, Мультсериалы" />
-<script src="js/jquery.js"></script><script src="js/tooltips.js"></script><script src="js/ajax.js"></script><script src="js/ajaxs.js"></script>
-<script src="js/showshides.js"></script><link rel="alternate" type="application/rss+xml" title="Последние торренты" href="rss">';
+<script src="js/jquery.js"></script><link rel="alternate" type="application/rss+xml" title="Последние торренты" href="rss">';
 /////////////////////////
 if(empty($rootpath))$rootpath = ROOT_PATH;
 ////////// functions_global ON /////////////
