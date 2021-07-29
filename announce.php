@@ -29,7 +29,6 @@ if(substr($peer_id, 0, 7) == "DE0586") err ("Out of date or BANNED  client versi
 if(substr($peer_id, 0, 7) == "DE0587") err ("Out of date or BANNED  client version. You need to change your client with one in the ACCEPTED  list.");
 if(substr($peer_id, 0, 7) == "DE1200") err ("Out of date or BANNED  client version. You need to change your client with one in the ACCEPTED  list.");
 if(substr($peer_id, 0, 7) == "DE13F0") err ("Out of date or BANNED  client version. You need to change your client with one in the ACCEPTED  list."); // == Deluge == //
-if(substr($peer_id, 0, 4) == "FUTB") err("FUTB? Fuck You Too.");
 if(substr($peer_id, 0, 3) == "-TS") err("TorrentStorm is Banned.");
 if(substr($peer_id, 0, 5) == "Mbrst") err("Burst! is Banned.");
 if(substr($peer_id, 0, 3) == "-BB") err("BitBuddy is Banned.");
@@ -53,10 +52,9 @@ $user = array();if(!$user = $cache->get('user_passkey_'.$passkey)){
 $res = mysql_query('SELECT id, enabled, parked, class, passkey_ip, warned FROM users WHERE passkey = '.sqlesc($passkey).' ORDER BY last_access DESC LIMIT 1') or err('USER Stats error (select)');
 $user = mysql_fetch_array($res);$cache->set('user_passkey_'.$passkey, $user, MEMCACHE_COMPRESSED, 1800);}
 if(!$user) err('Unknown passkey. Please redownload the torrent from '.$BASEURL.' - READ THE FAQ!');
-if($user['enabled'] == 'no') err('This account is disabled.');
+if($user['enabled'] == 'no') err('This account is disabled.');if($user['announce'] == 'no') err('You have disabled downloading and uploading torrents!');
 if($user['warned'] == 'yes') err('You cant download anything because you profile was warned. Any questions ask Admins or Directors.');
-if($user['parked'] == 'yes') err('Error, your account is parked!');
-if($user['passkey_ip'] != '' && getip() != $user['passkey_ip']) err('Unauthorized IP for this passkey!');
+if($user['parked'] == 'yes') err('Error, your account is parked!');if($user['passkey_ip'] != '' && getip() != $user['passkey_ip']) err('Unauthorized IP for this passkey!');
 $userid = $user['id'];$hash = bin2hex($info_hash);$torrent = array();if(!$torrent = $cache->get('torrent_infohash_'.$hash)){
 $res = mysql_query('SELECT id, visible, banned, free, seeders AS seederrs, leechers AS leecherrs, seeders + leechers AS numpeers, UNIX_TIMESTAMP(added) AS ts FROM torrents 
 WHERE info_hash = '.sqlesc($hash)) or err('Torrents error 1 (select)');$torrent = mysql_fetch_array($res);$cache->set('torrent_infohash_'.$hash, $torrent, MEMCACHE_COMPRESSED, 300);}
