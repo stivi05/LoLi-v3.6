@@ -42,10 +42,10 @@ write_log("Заказ id=".$idz." - Удален системой Так как 
 //////// Авто-бан всех двоных аккаунтов НАЧАЛО /////////////
 $resd = sql_query("SELECT count(*) AS dupl, ip FROM users WHERE ip <> '' GROUP BY ip ORDER BY dupl DESC") or sqlerr(__FILE__, __LINE__);
 while($rasd = mysql_fetch_assoc($resd)){if($rasd["dupl"] <= 1)break;
-$rosd = sql_query("SELECT id, username, enabled FROM users WHERE id <> '1' AND id <> '2' AND id <> '3' AND ip='".$rasd['ip']."' ORDER BY id DESC") or sqlerr(__FILE__, __LINE__);
+$rosd = sql_query("SELECT id, username, enabled FROM users WHERE id <> '1' AND id <> '2' AND ip='".$rasd['ip']."' ORDER BY id DESC") or sqlerr(__FILE__, __LINE__);
 while($arr = mysql_fetch_assoc($rosd)){if($arr['enabled'] == 'yes'){
 sql_query("UPDATE users SET enabled = 'no' WHERE id = ".$arr['id']) or sqlerr(__FILE__, __LINE__);
-sql_query("INSERT INTO bans (added, addedby, first, comment, haker) VALUES(NOW(), 2, ".sqlesc($ipd).", ".sqlesc('Дубль-аккаунты запрещены! Авто-бан с отключением всех двойных аккаунтов!').", 'no')") or sqlerr(__FILE__, __LINE__);
+sql_query("INSERT INTO bans (added, addedby, first, comment, haker) VALUES(NOW(), 2, ".sqlesc($rasd['ip']).", ".sqlesc('Дубль-аккаунты запрещены! Авто-бан с отключением всех двойных аккаунтов!').", 'no')") or sqlerr(__FILE__, __LINE__);
 $subject = "АВТО-Бан Дабл-акаунта";$msg = "Юзер ".$arr["username"]." попал в Авто-Бан, так как поиск нашел двойные аккаунты с этого IP: ".$rasd["ip"];
 sql_query("INSERT INTO messages (sender, sender_class, sender_username, sender_avatar, receiver, added, msg, subject) VALUES 
 (2, $sender_class, ".sqlesc($sender_username).", ".sqlesc($sender_avatar).", 1, NOW(), ".sqlesc($msg).", ".sqlesc($subject).")");$cache->delete('user_cache_'.$arr['id']);
