@@ -30,7 +30,8 @@ bark('<center><font color="red"><b>This account has been banned.</b></font><br><
 bark('<center><font color="red"><b>This account has been disabled.</b></font></center>');}}
 $ip = getip();if($row[peers] > 0 && $row[ip] != $ip && $row[ip]) bark("<center>This user is currently active from another IP. Input is not possible.</center>");
 $expires = (int) $_POST["expires"];if (!$expires or $expires <= 0 or $expires > 31556926){$expires = 0x7fffffff;}else{$expires = time() + $expires;}
-$rowid = $row["id"];$Cacher = Cache::getInstance();$Cacher->delete("user_cache_".$rowid);
-logincookie($row["id"], $row["passhash"], $row["language"], 1, $expires);if(!empty($_POST["returnto"])) header("Location: $DEFAULTBASEURL/$_POST[returnto]");else header("Location: $DEFAULTBASEURL"); 
+$cache = new Memcache();$cache->connect('127.0.0.1', 11211); //прописать ваши данные IP сервера и Порт Мемкеша!//
+$cache->delete('user_cache_'.$row["id"]);logincookie($row["id"], $row["passhash"], $row["language"], 1, $expires);
+if(!empty($_POST["returnto"])) header("Location: $DEFAULTBASEURL/$_POST[returnto]");else header("Location: $DEFAULTBASEURL"); 
 }else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
 <body style="background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"></body></html><?}?>
