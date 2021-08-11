@@ -28,10 +28,57 @@ sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".sqlesc($id));
 if(strlen($CURUSER['passkey']) != 32){$CURUSER['passkey'] = md5($CURUSER['username'].get_date_time().$CURUSER['passhash']);
 sql_query("UPDATE users SET passkey=".sqlesc($CURUSER[passkey])." WHERE id=".sqlesc($CURUSER[id]));}
 $dict = bdecode(file_get_contents($fn));
-if(!empty($dict['announce-list'])){
+/////////////////////////////
+if($row['multitracker'] == 'no'){
+	$dict['announce'] = $announce_urls[0]."?passkey=$CURUSER[passkey]"; // change announce url to local
+	$dict['info']['private'] = 1;  // add private tracker flag
+	$dict['info']['source'] = "[$DEFAULTBASEURL] $SITENAME"; // add link for bitcomet users	
+	unset($dict['announce-list']); // remove multi-tracker capability
+	unset($dict['nodes']); // remove cached peers (Bitcomet & Azareus)
+	unset($dict['info']['crc32']); // remove crc32
+	unset($dict['info']['ed2k']); // remove ed2k
+	unset($dict['info']['md5sum']); // remove md5sum
+	unset($dict['info']['sha1']); // remove sha1
+	unset($dict['info']['tiger']); // remove tiger
+	unset($dict['azureus_properties']); // remove azureus properties
+$dict = BDecode(BEncode($dict)); // double up on the becoding solves the occassional misgenerated infohash
+$dict['value']['comment'] = "Торрент создан для $SITENAME"; //torrent comment  
+$dict['created by'] = "$CURUSER[username]"; // change created by
+$dict['publisher'] = "$CURUSER[username]"; // change publisher
+$dict['publisher.utf-8'] = "$CURUSER[username]"; // change publisher.utf-8
+$dict['publisher-url'] = "$DEFAULTBASEURL/user_$owner"; // change publisher-url
+$dict['publisher-url.utf-8'] = "$DEFAULTBASEURL/user_$owner"; // change publisher-url.utf-8
+///////////////////
+$infohash = sha1(BEncode($dict['info']));
+sql_query("UPDATE torrents SET info_hashs = ".sqlesc($infohash)." WHERE id = $id AND info_hashs = ''") or sqlerr(__FILE__,__LINE__);}
+if($row['multitracker'] == 'yes'){
+if($CURUSER['multik'] == 'yes'){
+    $dict['announce'] = $announce_urls[0]."?passkey=$CURUSER[passkey]"; // change announce url to local
+	$dict['info']['private'] = 1;  // add private tracker flag
+	$dict['info']['source'] = "[$DEFAULTBASEURL] $SITENAME"; // add link for bitcomet users	
+	unset($dict['announce-list']); // remove multi-tracker capability
+	unset($dict['nodes']); // remove cached peers (Bitcomet & Azareus)
+	unset($dict['info']['crc32']); // remove crc32
+	unset($dict['info']['ed2k']); // remove ed2k
+	unset($dict['info']['md5sum']); // remove md5sum
+	unset($dict['info']['sha1']); // remove sha1
+	unset($dict['info']['tiger']); // remove tiger
+	unset($dict['azureus_properties']); // remove azureus properties
+$dict = BDecode(BEncode($dict)); // double up on the becoding solves the occassional misgenerated infohash
+$dict['value']['comment'] = "Торрент создан для $SITENAME"; //torrent comment  
+$dict['created by'] = "$CURUSER[username]"; // change created by
+$dict['publisher'] = "$CURUSER[username]"; // change publisher
+$dict['publisher.utf-8'] = "$CURUSER[username]"; // change publisher.utf-8
+$dict['publisher-url'] = "$DEFAULTBASEURL/user_$owner"; // change publisher-url
+$dict['publisher-url.utf-8'] = "$DEFAULTBASEURL/user_$owner"; // change publisher-url.utf-8
+///////////////////
+$infohash = sha1(BEncode($dict['info']));
+sql_query("UPDATE torrents SET info_hashs = ".sqlesc($infohash)." WHERE id = $id AND info_hashs = ''") or sqlerr(__FILE__,__LINE__);
+}else{if(!empty($dict['announce-list'])){
 $dict['announce-list'][][0] = $announce_urls[0]."?passkey=$CURUSER[passkey]";
 $dict['announce'] = $announce_urls[0]."?passkey=$CURUSER[passkey]";
-}else{$dict['announce'] = $announce_urls[0]."?passkey=$CURUSER[passkey]";}
+}else{$dict['announce'] = $announce_urls[0]."?passkey=$CURUSER[passkey]";}}}
+////////////////////////////
 $dict['comment']="$DEFAULTBASEURL/details_$id"; //torrent comment
 $dict['value']['source']="$DEFAULTBASEURL/details_$id"; //torrent comment
 header ("Expires: Tue, 1 Jan 1980 00:00:00 GMT");
@@ -47,6 +94,6 @@ header ("Content-Disposition: attachment; filename=\"$SITENAME"."_$id.torrent\""
 header ("Content-Type: application/x-bittorrent");
 ob_implicit_flush(true);
 print(BEncode($dict));
-$cache = new Memcache();$cache->connect('81.91.178.177', 11211);$cache->delete('user_cache_'.$CURUSER['id']);
+$cache = new Memcache();$cache->connect('127.0.0.1', 11211);$cache->delete('user_cache_'.$CURUSER['id']); // IP вашего сервера и порт Мемкеша
 }else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
 <body style="background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"></body></html><?}?>
