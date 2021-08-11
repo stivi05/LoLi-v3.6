@@ -57,7 +57,8 @@ if($user['warned'] == 'yes') err('You cant download anything because you profile
 if($user['parked'] == 'yes') err('Error, your account is parked!');if($user['passkey_ip'] != '' && getip() != $user['passkey_ip']) err('Unauthorized IP for this passkey!');
 $userid = $user['id'];$hash = bin2hex($info_hash);$torrent = array();if(!$torrent = $cache->get('torrent_infohash_'.$hash)){
 $res = mysql_query('SELECT id, visible, banned, free, seeders AS seederrs, leechers AS leecherrs, seeders + leechers AS numpeers, UNIX_TIMESTAMP(added) AS ts FROM torrents 
-WHERE info_hash = '.sqlesc($hash)) or err('Torrents error 1 (select)');$torrent = mysql_fetch_array($res);$cache->set('torrent_infohash_'.$hash, $torrent, MEMCACHE_COMPRESSED, 300);}
+WHERE IF(info_hash = '.sqlesc($hash).', info_hash = '.sqlesc($hash).', info_hashs = '.sqlesc($hash).')') or err('Torrents error 1 (select)');
+$torrent = mysql_fetch_array($res);$cache->set('torrent_infohash_'.$hash, $torrent, MEMCACHE_COMPRESSED, 300);}
 //////////////////////////////
 if(!$torrent) err('Torrent not registered with this tracker.');if($torrent["banned"] == "yes") err('Torrent banned with this tracker.');$torrentid = $torrent['id'];
 $fields = 'seeder, peer_id, ip, port, uploaded, downloaded, userid, last_action, UNIX_TIMESTAMP(NOW()) AS nowts, UNIX_TIMESTAMP(prev_action) AS prevts';
