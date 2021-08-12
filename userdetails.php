@@ -14,6 +14,7 @@ stdhead("Просмотр профиля ".$row["username"]);begin_frame($edites
 <? print("<tr><td class=\"a\" align=\"center\"><a href=\"#\" onclick=\"location.href='pass_users.php?to=pre&from=".$id."'; return false;\"><b><< Предыдущий Пользователь</b></a>
 </td><td class=\"b\" align=\"center\"><a href=\"#\" onclick=\"location.href='pass_users.php?to=next&from=".$id."'; return false;\"><b>Следующий Пользователь >></b></a></td></tr>");?>
 </table><?}?><table border="0" cellspacing="0" cellpadding="0" width="100%"><div id="tabs"><ul><li><a href="user_details.php?id=<?=$id?>&info=info">Профиль</a></li>
-<? if(get_user_class() >= UC_MODERATOR){?><li><a href="user_details.php?id=<?=$id?>&info=edit">Редактирование Пользователя</a></li><?}?></ul></div>
+<? if(($row["class"] > 8) && get_user_class() == UC_MODERATOR){}elseif(get_user_class() >= UC_MODERATOR && $row["class"] < get_user_class()){?>
+<li><a href="user_details.php?id=<?=$id?>&info=edit">Редактирование Пользователя</a></li><?}?></ul></div>
 </table><?end_frame();stdfoot();}}else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
 <body style="background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"></body></html><?}?>
