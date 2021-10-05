@@ -13,7 +13,9 @@ $res = sql_query("SELECT torrent, COUNT(*) AS c FROM comments GROUP BY torrent")
 while ($row = mysql_fetch_assoc($res)){$torrents[$row["torrent"]]["comments"] = $row["c"];}$fields = explode(":", "comments:leechers:seeders");
 $res = sql_query("SELECT id, seeders, leechers, comments FROM torrents") or sqlerr(__FILE__,__LINE__);while ($row = mysql_fetch_assoc($res)){$id = $row["id"];$torr = $torrents[$id];
 foreach ($fields as $field){if(!isset($torr[$field]))$torr[$field] = 0;}$update = array();foreach ($fields as $field){if($torr[$field] != $row[$field])$update[] = "$field = " . $torr[$field];}
-if(count($update))sql_query("UPDATE torrents SET ".implode(", ", $update)." WHERE id = $id") or sqlerr(__FILE__,__LINE__);}
+if(count($update)){
+sql_query("UPDATE torrents SET ".implode(", ", $update)." WHERE id = $id") or sqlerr(__FILE__,__LINE__);
+sql_query("UPDATE browse SET ".implode(", ", $update)." WHERE id = $id") or sqlerr(__FILE__,__LINE__);}}
 /////////////// CURUSER CACHE Nachalo ////////////////////////////
 $usersres = sql_query("SELECT * FROM users WHERE status='confirmed' ORDER BY id") or sqlerr(__FILE__, __LINE__);
 while($usersre = mysql_fetch_assoc($usersres)){$id = $usersre['id'];
