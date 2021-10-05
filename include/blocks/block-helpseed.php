@@ -2,7 +2,7 @@
 $blocktitle = ".:: Релизы, которым нужны раздающие ::.";$_cache = 'Blocks_helpseed.cache'; 
 if(!$CacheBlock->Check($_cache, $helpseedBlock_Refresh?0:7200)){ /*/ 1 chas ||60 - 1 minuta || 3600 - 1 chas /*/
 $content .= "<table style='background:none;width:98%;border:0;' cellspacing='0' cellpadding='10px'>";
-$res = sql_query("SELECT id, name, seeders, free, leechers FROM torrents WHERE leechers > 0 AND seeders = 0 ORDER BY leechers DESC LIMIT 20") or sqlerr(__FILE__, __LINE__);
+$res = sql_query("SELECT id, name, seeders, free, leechers FROM browse WHERE leechers > 0 AND seeders = 0 ORDER BY leechers DESC LIMIT 20") or sqlerr(__FILE__, __LINE__);
 if(mysql_num_rows($res) > 0){while($arr = mysql_fetch_assoc($res)){$torrname = htmlspecialchars_uni($arr['name']);switch($arr['free']){
 case 'bril': $disname = "<font color='blue' title='Бриллиантовая раздача! Это значит, что кол-во розданного на этой раздаче удваивается!'>$torrname</font>";break;
 case 'yes': $disname = "<font color='#d08700' title='Золотая раздача! Это значит, что кол-во скачанного на этой раздаче не идет в общую статистику!'>$torrname</font>";break;
