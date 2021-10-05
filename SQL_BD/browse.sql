@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `browse` (
   `updatess` enum('yes','no') NOT NULL DEFAULT 'no'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-ALTER TABLE `browserr`
+ALTER TABLE `browse`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `owner` (`owner`,`id`) USING BTREE,
   ADD UNIQUE KEY `views_id_name_images_sm` (`id`,`name`) USING BTREE,
@@ -51,5 +51,5 @@ ALTER TABLE `browserr`
   ADD KEY `leechers_seeders` (`leechers`,`seeders`),
   ADD FULLTEXT KEY `description` (`description`);
 
-ALTER TABLE `browserr`
+ALTER TABLE `browse`
   MODIFY `id` mediumint(7) unsigned NOT NULL AUTO_INCREMENT;
