@@ -1,9 +1,12 @@
 <?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER){
-$search = unesc($_GET['search']);$class = $_GET['class'];if($class == 'All' || !is_valid_user_class($class))$class = '';$letter = trim($_GET["letter"]);
-if(strlen($letter) > 1)die;if($search != ''){$query = " WHERE username LIKE '%".sqlwildcardesc("$search")."%'";$q = "search=".$search;
+$search = unesc($_GET['search']);$class = $_GET['class'];if($class == 'All' || !is_valid_user_class($class))$class = '';$letter = trim($_GET["letter"]);if(strlen($letter) > 1)die;
+////////////
+if($search != ''){$query = " WHERE username LIKE '%".sqlwildcardesc("$search")."%'";$q = "search=".$search;
 if($class != ''){$query .= " AND class = $class";$q .= "&class=$class";}}else{if($class != ''){$query .= " WHERE class = $class";$q .= "class=$class";}}
-if($letter != '' && strpos("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789><^*-|_", $letter) === false){$query = " WHERE username LIKE '$letter%'";
-$q = "letter=$letter";}stdhead("Пользователи");?>
+if($letter != '' && strpos("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789><^*-|_", $letter) === false)
+{$query = " WHERE username LIKE '$letter%'";$q = "letter=$letter";}
+//////////////////
+stdhead("Пользователи");?>
 <table style="background:none;cellspacing:0;cellpadding:0;width:100%;float:center;"><tr>
 <td style="border-radius:15px;border:none;" class='a'><table style="background:none;width:100%;float:center;border:0;"><tr>
 <td class="zaliwka" style="color:#FFFFFF;colspan:14;height:30px;font-family:cursive;font-weight:bold;font-size:14px;text-align:center;border:0;border-radius:5px;">
@@ -22,7 +25,8 @@ print("</p>");$q .= ($q ? "&amp;" : "");$page = $_GET['page'];$dt = gmtime() - 3
 $resd = sql_query("SELECT id FROM users$query") or sqlerr(__FILE__, __LINE__);$num = mysql_num_rows($resd);
 if(mysql_num_rows($resd) == 0){
 echo "</td></tr></table></td></tr></table><table style='background:none;border:none;cellspacing:0;cellpadding:0;margin-top:7px;width:200px;float:center;'><tr><td style='margin-top:7px;width:250px;float:center;border-radius:5px;-webkit-border-radius:5px;-moz-border-radius:5px;-khtml-border-radius:5px;border:1px solid white;display:block;' class='a'><center><font style='font-family:tahoma;font-size:14px;font-weight:10;color:red;'><b>НЕТ юзеров по вашему запросу!</b></font></center></td></tr></table>";
-}else{$perpage = 12;list($pagertop, $pagerbottom, $limit) = pager2($perpage, $num, "users?".$q);
+}else{
+$perpage = 12;list($pagertop, $pagerbottom, $limit) = pager2($perpage, $num, "users?".$q);
 $res = sql_query("SELECT u.*, c.name, c.flagpic FROM users AS u LEFT JOIN countries AS c ON c.id = u.country$query ORDER BY added $limit") or sqlerr(__FILE__, __LINE__);
 ?></td></tr></table></td></tr></table><table style="margin-top:7px;background:none;cellspacing:0;cellpadding:0;width:100%;float:center;align:center;border:0;">
 <tr><td align='center' style='background:none;cellspacing:0;cellpadding:0;width:100%;float:center;'><?=$pagertop?></td></tr></table>
@@ -30,7 +34,7 @@ $res = sql_query("SELECT u.*, c.name, c.flagpic FROM users AS u LEFT JOIN countr
 /////////////////////
 while($arr = mysql_fetch_assoc($res)){if($nc == 1){print("<tr>");}
 if($arr['country'] > 0){$country = "<img src='pic/flag/".$arr['flagpic']."' alt='".$arr['name']."' title='".$arr['name']."'/>";}else{$country = "<Не указанно";}
-if($arr['added'] == '0000-00-00 00:00:00')$arr['added'] = '-';if($arr['last_access'] == '0000-00-00 00:00:00')$arr['last_access'] = '-';
+if($arr['added'] == '0000-00-00 00:00:00')$arr['added'] = '-';
 if($arr["downloaded"] > 0){$ratio = number_format($arr["uploaded"] / $arr["downloaded"], 2);if(($arr["uploaded"] / $arr["downloaded"]) > 100)$ratio = "100+";
 $ratio = "<font color='".get_ratio_color($ratio)."'>$ratio</font>";}elseif($arr["uploaded"] > 0) $ratio = "Inf.";else $ratio = "Inf.";
 if($arr["gender"] == "1") $gender = "<img src='pic/male1.gif' alt='Парень' style='margin-left:4px;'/>";
@@ -47,8 +51,9 @@ print("<td style='padding:10px;width:240px;background:none;'><table style='backg
 <a href='#' onclick=\"javascript:window.open('sendpm_".$arr['id']."', 'Отправить PM', 'width=650px, height=465px');return false;\" title='Отправить ЛС'><img src='pic/pn_inbox.gif' border='0' title='PM'/></a>&nbsp;&nbsp;$country<br><br><img src='pic/multitracker.png' border='0' alt='Рейтинг'/>&nbsp;<b>$ratio</b></center></td></tr></table><hr width='200px'>
 <table style='background:none;border:0;' width='240px'><tr><td class='embedded' align='left' style='background:none;border:0;'>
 <b>Зарегистрирован:</b>&nbsp;<font color='green'><b>".get_elapsed_time(sql_timestamp_to_unix_timestamp($arr["added"]))." ".$tracker_lang['ago']."</b>
-</font></td></tr><tr><td class='embedded' width='150px' align='left' style='background:none;border:0;'><b>Последний визит:</b>&nbsp;<font color='blue'>
-<b>".get_elapsed_time(sql_timestamp_to_unix_timestamp($arr["last_access"]))." ".$tracker_lang['ago']."</b></font></td></tr></table></td></tr></table></td>");
+</font></td></tr><tr><td class='embedded' width='150px' align='left' style='background:none;border:0;'><b>Последний визит:</b>&nbsp;<font color='blue'>");
+if($arr['last_access'] != '0000-00-00 00:00:00'){print("<b>".get_elapsed_time(sql_timestamp_to_unix_timestamp($arr["last_access"]))." ".$tracker_lang['ago']."</b>");
+}else{print("<b>НИКОГДА</b>");}print("</font></td></tr></table></td></tr></table></td>");
 ++$nc;if($nc == 4){$nc=1;print("</tr>");}}}?></table><table style="background:none;cellspacing:0;cellpadding:0;width:100%;float:center;align:center;border:0;">
 <tr><td align='center' style='background:none;cellspacing:0;cellpadding:0;width:100%;float:center;'><?=$pagerbottom?></td></tr></table>
 <?}?><?stdfoot();}else{?><html><head><meta http-equiv='refresh' content='0;url=/'></head>
