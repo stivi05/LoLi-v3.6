@@ -3,8 +3,8 @@ $action = ($_POST['action'] ? $_POST['action'] : ($_GET['action'] ? $_GET['actio
 if($action == 'clean_tags'){sql_query('TRUNCATE TABLE tags') or sqlerr(__FILE__, __LINE__);sql_query('TRUNCATE TABLE browse') or sqlerr(__FILE__, __LINE__);
 sql_query('INSERT INTO tags (id, name, keywords, description, not_sticky, image1, free, multitracker, seeders, added) SELECT id, name, keywords, description, 
 not_sticky, image1, free, multitracker, seeders, added FROM torrents') or sqlerr(__FILE__, __LINE__);
-sql_query('INSERT INTO browse (id, name, description, category, incategory, voice, tryd, webdl, reliz, size, added, comments, leechers, remote_leechers, seeders, remote_seeders, 
-owner, free, not_sticky, multitracker, dostup, updatess) SELECT id, name, description, category, incategory, voice, tryd, webdl, reliz, size, added, comments, leechers, 
+sql_query('INSERT INTO browse (id, name, description, category, incategory, voice, size, added, comments, leechers, remote_leechers, seeders, remote_seeders, 
+owner, free, not_sticky, multitracker, dostup, updatess) SELECT id, name, description, category, incategory, size, added, comments, leechers, 
 remote_leechers, seeders, remote_seeders, owner, free, not_sticky, multitracker, dostup, updatess FROM torrents') or sqlerr(__FILE__, __LINE__);
 header("Refresh: 3; url=browse");
 stderr2('<center><b>Таблицы тегов и торрентов были успешно очищены и обновлены.</b></center>','<center><b>Таблица Тегов и Торрентов были успешно очищены и обновлены. Сейчас вы будете возвращены в Browse.</b></center>'); 
