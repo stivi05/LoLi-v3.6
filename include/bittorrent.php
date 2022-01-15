@@ -815,17 +815,14 @@ if(socket_set_block($socket) == false){socket_close($socket);return false;}switc
 case 2: $result = false;break;case 1: $result = true;break;case 0: $result = false;break;}socket_close($socket);}else{$socket = @fsockopen($host, $port, $errno, $errstr, 5);
 if(!$socket) $result = false;else{$result = true;@fclose($socket);}}return $result;}
 //////////////////////////
-function is_theme($theme = ""){global $rootpath, $stdhead;return file_exists($rootpath."stdfoot.php");}
-/////////////////////////
-function get_themes(){global $rootpath;$handle = opendir($rootpath."themes");$themelist = array();while ($file = readdir($handle)){
-if(is_theme($file) && $file != "." && $file != ".."){$themelist[] = $file;}}closedir($handle);sort($themelist);return $themelist;}
+function get_themes(){global $rootpath;$handle = opendir($rootpath."themes");$themelist = array();while(false !== ($file = readdir($handle))){
+if($file == '.' || $file == '..'){continue;}$themelist[] = $file;}closedir($handle);sort($themelist);return $themelist;}
 /////////////////////
 function theme_selector($sel_theme = "", $use_fsw = false){global $DEFAULTBASEURL;$themes = get_themes();
 $content = "<select name='theme'".($use_fsw ? " onchange=".$CURUSER["theme"]."" : "").">";
 foreach($themes as $theme)$content .= "<option value='$theme'".($theme == $sel_theme ? " selected" : "").">$theme</option>\n";$content .= "</select>";return $content;}
 /////////////////////
-function select_theme(){global $CURUSER, $default_theme;if($CURUSER)$theme = $CURUSER["theme"];else $theme = $default_theme;
-if(!is_theme($theme))$theme = $default_theme;return $theme;}
+function select_theme(){global $CURUSER, $default_theme;if($CURUSER)$theme = $CURUSER["theme"];else $theme = $default_theme;return $theme;}
 /////////////////////////
 function title($str){static $title='';if(!empty($str)) $title=$str;return $title;}
 //////////////////
