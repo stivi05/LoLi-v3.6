@@ -43,7 +43,7 @@ $curenabled = $arr["enabled"];$curschoutboxpos = $arr["schoutboxpos"];$curcoment
 $curclass = $arr["class"];$curwarned = $arr["warned"];
 if(get_user_class() == UC_VLADELEC)$modcomment = $_POST["modcomment"];else $modcomment = $arr["modcomment"];
 if($curclass > get_user_class() || $class > get_user_class())puke("Так нельзя делать!");
-if(is_theme($theme)) $updateset[] = "theme = ".sqlesc($theme);
+$updateset[] = "theme = ".sqlesc($theme);
 ////////////////////////////
 $res = mysql_query("SELECT username FROM users WHERE id = $userid") or sqlerr(__FILE__, __LINE__); $user = mysql_fetch_array($res);$username = $user["username"];
 /////////////////
