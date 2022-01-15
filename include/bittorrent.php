@@ -821,7 +821,7 @@ function get_themes(){global $rootpath;$handle = opendir($rootpath."themes");$th
 if(is_theme($file) && $file != "." && $file != ".."){$themelist[] = $file;}}closedir($handle);sort($themelist);return $themelist;}
 /////////////////////
 function theme_selector($sel_theme = "", $use_fsw = false){global $DEFAULTBASEURL;$themes = get_themes();
-$content = "<select name='theme'".($use_fsw ? " onchange=\"window.location='$DEFAULTBASEURL/changetheme.php?theme='+this.options[this.selectedIndex].value\"" : "").">";
+$content = "<select name='theme'".($use_fsw ? " onchange=".$CURUSER["theme"]."" : "").">";
 foreach($themes as $theme)$content .= "<option value='$theme'".($theme == $sel_theme ? " selected" : "").">$theme</option>\n";$content .= "</select>";return $content;}
 /////////////////////
 function select_theme(){global $CURUSER, $default_theme;if($CURUSER)$theme = $CURUSER["theme"];else $theme = $default_theme;
