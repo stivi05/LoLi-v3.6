@@ -70,7 +70,7 @@ $updateset[] = "skype = " . sqlesc($skype);$website = unesc($_POST["website"]);$
 $updateset[] = "torrentsperpage = " . min(100, 0 + $_POST["torrentsperpage"]);
 $updateset[] = "topicsperpage = " . min(100, 0 + $_POST["topicsperpage"]);
 $updateset[] = "postsperpage = " . min(100, 0 + $_POST["postsperpage"]);
-if(is_theme($theme)) $updateset[] = "theme = ".sqlesc($theme);
+$updateset[] = "theme = ".sqlesc($theme);
 if(is_valid_id($country)) $updateset[] = "country = $country";$action = "usercp_personal";}elseif($action == "pm"){$acceptpms = $_POST["acceptpms"];
 $deletepms = ($_POST["deletepms"] != "" ? "yes" : "no");$savepms = ($_POST["savepms"] != "" ? "yes" : "no");
 $r = mysql_query("SELECT id FROM categories") or sqlerr(__FILE__, __LINE__);$rows = mysql_num_rows($r);
