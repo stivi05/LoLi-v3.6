@@ -908,8 +908,7 @@ INSERT INTO `reliz` (`id`, `sort`, `name`, `image`) VALUES
 
 CREATE TABLE IF NOT EXISTS `relizi_block` (
   `id` mediumint(7) unsigned NOT NULL,
-  `textt` varchar(6000) NOT NULL DEFAULT '',
-  `time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
+  `textt` varchar(6000) NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
