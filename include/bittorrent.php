@@ -68,8 +68,6 @@ define ("UC_VLADELEC", 11);
 //////////////////////////
 $max_torrent_size = 1024 * 1024 * 6;
 $announce_interval = 60 * 30;
-$signup_timeout = 86400 * 3;
-$max_dead_torrent_time = 175*86400;
 $maxloginattempts = 3; // Максимальное количество попыток входа 
 $maxloginattemptss = 3; // Максимальное количество попыток подбора ответа на секретный вопрос
 $maxusers = 250000;
@@ -82,18 +80,12 @@ $maxfilesize = 5242880; // 5mb
 $max_image_size = 5242880; // 5mb
 $avatar_max_width = 180; // Максимальная ширина аватары.
 $avatar_max_height = 360; // Максимальная высота аватары.
-$image_max_width = 2000; // Максимальная ширина image.
-$image_max_height = 2000; // Максимальная высота image.
 $default_theme = 'HDGray'; // Тема по умолчанию.
 $nc = 'no'; // Не пропускать на трекер пиров с закрытыми портами.
 $default_language = 'russian'; // Язык трекера по умолчанию.
 $use_email_act = 1; // Использовать активацию по почте, иначе - автоматическая активация при регистрации.
 $use_lang = 1; // Включить языковую систему. Выключите если вы хотите перевести шаблоны и другие файлы - тогда все фразы от системы станут пустым местом.
 $use_sessions = 1; // Использовать сессии. 0 - нет, 1 - да.
-$smtptype = 'default';
-$allow_block_hide = true; // Разрешить сворачивание блоков
-$check_for_working_smtp = true; // Проверять работу почтового MTA при регистрации пользователя (TCP connect @ domain:25)
-$force_private_tracker = true;
 $admin_email = 'емайл админа сайта'; // Почта администратора трекера, для формы обратной связи //прописать ваши данные!//
 $website_name = 'Название сайта'; // Краткое имя сайта, для формы обратной связи //прописать ваши данные!//
 $head[] = '<meta http-equiv="imagetoolbar" content="no" /><meta name="resource-type" content="document" /><meta name="distribution" content="global" />
