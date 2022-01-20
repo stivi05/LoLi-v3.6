@@ -11,3 +11,4 @@ ALTER TABLE `reliz`
 
 ALTER TABLE `reliz`
   MODIFY `id` tinyint(1) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
+  
