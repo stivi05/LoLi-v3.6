@@ -162,9 +162,6 @@ CREATE TABLE IF NOT EXISTS `browse` (
   `description` varchar(255) NOT NULL,
   `category` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `incategory` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `voice` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `tryd` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `webdl` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `reliz` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `size` bigint(20) unsigned NOT NULL DEFAULT '0',
   `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -218,11 +215,7 @@ CREATE TABLE IF NOT EXISTS `checkcomm` (
   `id` int(11) NOT NULL,
   `checkid` mediumint(7) NOT NULL DEFAULT '0',
   `userid` mediumint(7) NOT NULL DEFAULT '0',
-  `torrent` mediumint(7) NOT NULL DEFAULT '0',
-  `req` mediumint(7) NOT NULL DEFAULT '0',
-  `offer` mediumint(7) NOT NULL DEFAULT '0',
-  `oj` tinyint(4) NOT NULL DEFAULT '0',
-  `news` tinyint(4) NOT NULL DEFAULT '0'
+  `torrent` mediumint(7) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -260,9 +253,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `ori_text_html` text NOT NULL,
   `editedby` mediumint(7) unsigned NOT NULL DEFAULT '0',
   `editedat` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `ip` varchar(15) NOT NULL DEFAULT '',
-  `request` mediumint(7) NOT NULL DEFAULT '0',
-  `offer` mediumint(7) NOT NULL DEFAULT '0'
+  `ip` varchar(15) NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1098,9 +1089,6 @@ CREATE TABLE IF NOT EXISTS `torrents` (
   `fulldescr_html` mediumtext NOT NULL,
   `category` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `incategory` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `voice` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `tryd` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `webdl` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `reliz` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `size` bigint(20) unsigned NOT NULL DEFAULT '0',
   `added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1132,8 +1120,7 @@ CREATE TABLE IF NOT EXISTS `torrents` (
   `imdbtime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `imdb` varchar(15) NOT NULL DEFAULT '0',
   `relizs` varchar(3000) NOT NULL,
-  `recommend` varchar(3000) NOT NULL,
-  `portalid` mediumint(7) unsigned NOT NULL
+  `recommend` varchar(3000) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1267,7 +1254,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `freeuntil` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `briluntil` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `last_upload` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `premiya` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `stops` enum('yes','no') NOT NULL DEFAULT 'no',
   `question` varchar(30) NOT NULL DEFAULT '',
   `donated` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -1276,8 +1262,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `announce` enum('yes','no') NOT NULL DEFAULT 'yes',
   `multik` enum('yes','no') DEFAULT 'no',
   `comreliz` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `comforum` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `topicforum` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `newmess` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `invtime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `relizs` int(7) NOT NULL DEFAULT '0'
@@ -1386,9 +1370,6 @@ ALTER TABLE `bookmarks`
 --
 ALTER TABLE `browse`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `voice_added` (`voice`,`added`) USING BTREE,
-  ADD UNIQUE KEY `webdl_added` (`webdl`,`added`) USING BTREE,
-  ADD UNIQUE KEY `tryd_added` (`tryd`,`added`) USING BTREE,
   ADD UNIQUE KEY `incategory_added` (`incategory`,`added`) USING BTREE,
   ADD UNIQUE KEY `reliz_added` (`reliz`,`added`) USING BTREE,
   ADD UNIQUE KEY `category_added` (`category`,`added`) USING BTREE,
@@ -1430,8 +1411,6 @@ ALTER TABLE `comments`
   ADD KEY `torrent` (`torrent`),
   ADD KEY `ip` (`ip`),
   ADD KEY `added` (`added`),
-  ADD KEY `request` (`request`),
-  ADD KEY `offer` (`offer`),
   ADD KEY `torrent_id` (`torrent`,`id`) USING BTREE;
 
 --
@@ -1695,9 +1674,6 @@ ALTER TABLE `torrents`
   ADD UNIQUE KEY `views_id_name_images_sm` (`views`,`id`,`name`) USING BTREE,
   ADD UNIQUE KEY `name_id` (`name`,`id`) USING BTREE,
   ADD UNIQUE KEY `multitracker_added` (`multitracker`,`added`) USING BTREE,
-  ADD UNIQUE KEY `voice_added` (`voice`,`added`) USING BTREE,
-  ADD UNIQUE KEY `webdl_added` (`webdl`,`added`) USING BTREE,
-  ADD UNIQUE KEY `tryd_added` (`tryd`,`added`) USING BTREE,
   ADD UNIQUE KEY `incategory_added` (`incategory`,`added`) USING BTREE,
   ADD UNIQUE KEY `reliz_added` (`reliz`,`added`) USING BTREE,
   ADD UNIQUE KEY `name_added` (`name`,`added`) USING BTREE,
