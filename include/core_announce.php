@@ -61,7 +61,6 @@ define ("UC_SYSOP", 10);
 define ("UC_VLADELEC", 11);
 //////////////////////////
 $announce_interval = 60 * 30;
-$max_dead_torrent_time = 175*86400;
 $SITENAME = 'название вашего сайта'; //прописать ваши данные!//
 $autoclean_interval = 60 * 30;
 $nc = 'no'; // Не пропускать на трекер пиров с закрытыми портами.
