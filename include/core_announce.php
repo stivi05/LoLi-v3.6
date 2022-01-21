@@ -35,12 +35,10 @@ $message = str_replace("<","&lt;",$message);$message = str_replace(">","&gt;",$m
 $message = str_replace("\"","&quot;",$message);$message = str_replace("  ", "&nbsp;&nbsp;", $message);return $message;}}
 // DEFINE IMPORTANT CONSTANTS
 define ('TIMENOW', time());
-$url = explode('/', htmlspecialchars_uni($_SERVER['PHP_SELF']));
-array_pop($url);
+$url = explode('/', htmlspecialchars_uni($_SERVER['PHP_SELF']));array_pop($url);
 $DEFAULTBASEURL = (($_SERVER['SERVER_PORT'] == 443) ? "https://" : "https://").htmlspecialchars_uni($_SERVER['HTTP_HOST']).implode('/', $url);
 $BASEURL = $DEFAULTBASEURL;
-$announce_urls = array();
-$announce_urls[] = "$DEFAULTBASEURL/announce.php";
+$announce_urls = array();$announce_urls[] = "$DEFAULTBASEURL/announce.php";
 // SECURITY
 define ('COOKIE_SALT', 'lskdflkijfef7w6438794389tn9cp043t8uc4ppodemoip4o98mr9r8m49rm32404m9x9u4xu9nmcpti9tu9tu94ttum'); // Заполните эту переменную любым мусором, символов эдак 32 - нужно для соли кукисов
 // После смены этих двух параметров всем пользователям надо будет ввести логин пароль
@@ -60,11 +58,10 @@ define ("UC_ADMINISTRATOR", 9);
 define ("UC_SYSOP", 10);
 define ("UC_VLADELEC", 11);
 //////////////////////////
-$announce_interval = 60 * 30;
 $SITENAME = 'название вашего сайта'; //прописать ваши данные!//
+$announce_interval = 60 * 30;
 $autoclean_interval = 60 * 30;
 $nc = 'no'; // Не пропускать на трекер пиров с закрытыми портами.
-$force_private_tracker = true;
 /////////////////////
 function err($msg){benc_resp(array("failure reason" => array('type' => 'string', 'value' => $msg)));exit();}
 function benc_resp($d){benc_resp_raw(benc(array('type' => 'dictionary', 'value' => $d)));}
