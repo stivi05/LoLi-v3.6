@@ -1206,7 +1206,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `support` enum('no','yes') NOT NULL DEFAULT 'no',
   `supportfor` varchar(100) DEFAULT NULL,
   `avatar` varchar(30) NOT NULL DEFAULT '',
-  `telgr` varchar(40) NOT NULL,
+  `telgr` varchar(40) NOT NULL DEFAULT '',
   `skype` varchar(40) NOT NULL DEFAULT '',
   `website` varchar(30) NOT NULL DEFAULT '',
   `uploaded` bigint(20) unsigned NOT NULL DEFAULT '0',
