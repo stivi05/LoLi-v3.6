@@ -5,8 +5,8 @@ global $CacheBlock, $SITENAME;$_cache = 'signup.cache';$_cache2 = 'inwayts.cache
 $inwayts = $CacheBlock->Read($_cache2);$banes = sql_query("SELECT first FROM bans WHERE first = '".getip()."'") or sqlerr(__FILE__, __LINE__);if(mysql_num_rows($banes) > 0){
 ?><!DOCTYPE html><html lang="ru"><head><meta http-equiv='refresh' content='0;url=https://www.fbi.gov/'></head>
 <body style="background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;">
-</body></html><? die;}else{$newres = sql_query("SELECT username FROM users WHERE ip = '".getip()."'") or sqlerr(__FILE__, __LINE__);if(mysql_num_rows($newres) > 0){
-$signup1 = "";$signup2 = "";}else{$signup1 = "<span id='signup'>Sign Up</span>";$signup2 = "<span id='signup2'>Sign Up</span>";}
+</body></html><? die;}else{$users = get_row_count("users");$newres = sql_query("SELECT username FROM users WHERE ip = '".getip()."'") or sqlerr(__FILE__, __LINE__);
+if(mysql_num_rows($newres) > 0){$signup1 = "";$signup2 = "";}else{$signup1 = "<span id='signup'>Sign Up</span>";$signup2 = "<span id='signup2'>Sign Up</span>";}
 ?><!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="description" content="<?=$SITENAME?>"><link rel="canonical" href="index.php">
 <title><?=$SITENAME?></title><?header("Cache-Control: public, max-age=604800, immutable");header("Expires: ".gmdate("D, d M Y H:i:s", time() + 60*60*744)." GMT");?>
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /><link rel="shortcut icon" type="image/x-icon" href="data:image/x-icon"><link rel="stylesheet" href="login.css">
@@ -27,7 +27,7 @@ if($signup['vibor'] == 0){}else{?><?=$signup2?><?}?></div></div><?if($signup['vi
 <input class="pass" type="password" name="passagain" placeholder="Password" id="passagain" required />
 <input class="pass" type="password" name="wantpassword" placeholder="Password again" id="wantpassword" required />
 <input class="mail" type="text" name="email" id="email" placeholder="E-mail (only @gmail.com)" required />
-<?if($inwayts['vibor'] == 0){?><input type="text" name="invite" placeholder="Invitation code" required /><?}else{}?>
+<?if($inwayts['vibor'] == 0 && $users){?><input type="text" name="invite" placeholder="Invitation code" required /><?}else{}?>
 <input class="orange-btn" type="submit" value="Sign Up"><div id="signups-container"><span id="logins">Login</span>
 <span id="telega3"><a target='_blank' href='https://t.me'>Contacts</a></span><span id="forgotten2">Password Recovery</span></div></form></div><?}?>
 <script src="login.js" async></script></body></html><?}}?>
