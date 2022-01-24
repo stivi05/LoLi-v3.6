@@ -10,7 +10,7 @@ stderr("<center>Double registration Impossible!</center>", "<center><font color=
 $users = get_row_count("users");
 if($users >= $maxusers) stderr("Error", "<center>".sprintf($tracker_lang['signup_users_limit'], number_format($maxusers))."</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
 if(!mkglobal("wantusername:wantpassword:passagain:email")) stderr("Error", "<center>".$tracker_lang['dad']."</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
-if($users > 0){$inwayts = mysql_result(mysql_query("SELECT value FROM inwayts WHERE name = 'inwayts'"), 0);if ($inwayts == 0){$inviter = $invitedroot = 0;
+if($users > 0){global $CacheBlock;$_cache2 = 'inwayts.cache';$inwayts = $CacheBlock->Read($_cache2);if($inwayts['vibor'] == 0){$inviter = $invitedroot = 0;
 if(empty($_POST["invite"])) stderr("Error", "<center>To register, you need to enter an invitation code!</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
 if(strlen($_POST["invite"]) != 32) stderr("Error", "<center>You entered an invalid invitation code</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
 list($inviter) = mysql_fetch_row(mysql_query("SELECT inviter FROM invites WHERE invite = ".sqlesc($_POST["invite"], true)));
