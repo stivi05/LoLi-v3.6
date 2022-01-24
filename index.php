@@ -27,7 +27,7 @@ if($signup['vibor'] == 0){}else{?><?=$signup2?><?}?></div></div><?if($signup['vi
 <input class="pass" type="password" name="passagain" placeholder="Password" id="passagain" required />
 <input class="pass" type="password" name="wantpassword" placeholder="Password again" id="wantpassword" required />
 <input class="mail" type="text" name="email" id="email" placeholder="E-mail (only @gmail.com)" required />
-<?if($inwayts['vibor'] == 0 && $users){?><input type="text" name="invite" placeholder="Invitation code" required /><?}else{}?>
+<?if($inwayts['vibor'] == 0 && $users > 0){?><input type="text" name="invite" placeholder="Invitation code" required /><?}else{}?>
 <input class="orange-btn" type="submit" value="Sign Up"><div id="signups-container"><span id="logins">Login</span>
 <span id="telega3"><a target='_blank' href='https://t.me'>Contacts</a></span><span id="forgotten2">Password Recovery</span></div></form></div><?}?>
 <script src="login.js" async></script></body></html><?}}?>
