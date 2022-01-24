@@ -10,12 +10,12 @@ stderr("<center>Double registration Impossible!</center>", "<center><font color=
 $users = get_row_count("users");
 if($users >= $maxusers) stderr("Error", "<center>".sprintf($tracker_lang['signup_users_limit'], number_format($maxusers))."</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
 if(!mkglobal("wantusername:wantpassword:passagain:email")) stderr("Error", "<center>".$tracker_lang['dad']."</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
-$inwayts = mysql_result(mysql_query("SELECT value FROM inwayts WHERE name = 'inwayts'"), 0);if ($inwayts == 0){$inviter = $invitedroot = 0;
+if($users > 0){$inwayts = mysql_result(mysql_query("SELECT value FROM inwayts WHERE name = 'inwayts'"), 0);if ($inwayts == 0){$inviter = $invitedroot = 0;
 if(empty($_POST["invite"])) stderr("Error", "<center>To register, you need to enter an invitation code!</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
 if(strlen($_POST["invite"]) != 32) stderr("Error", "<center>You entered an invalid invitation code</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
 list($inviter) = mysql_fetch_row(mysql_query("SELECT inviter FROM invites WHERE invite = ".sqlesc($_POST["invite"], true)));
 if(!$inviter) stderr("Error", "<center>The invitation code you entered is not working</center><html><head><meta http-equiv=refresh content='5;url=/'></head></html>");
-list($invitedroot) = mysql_fetch_row(mysql_query("SELECT invitedroot FROM users WHERE id = $inviter"));}
+list($invitedroot) = mysql_fetch_row(mysql_query("SELECT invitedroot FROM users WHERE id = $inviter"));}}
 function bark($msg){?><html><head><meta http-equiv='refresh' content='8;url=/'></head>
 <body style="background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"><?=stderr("Error", $msg);?></body></html><?}
 function validusername($username){if($username == "") return false;
@@ -51,7 +51,7 @@ $b = (mysql_fetch_row(mysql_query("SELECT enabled, id FROM users WHERE ip = '$ip
 if($b[0] == 'no'){$banned_id = $b[1];setcookie(COOKIE_UID, $banned_id, "0x7fffffff", "/");bark("<center>Your IP is banned on this tracker. Registration is not possible.</center>");}}
 $secret = mksecret();$wantpasshash = md5($secret . $wantpassword . $secret);$editsecret = (!$users ? "" : mksecret());
 if (!$users) $status = 'confirmed';else $status = 'pending';
-if($inwayts == 0){
+if($inwayts == 0 && $users > 0){
 $ret = mysql_query("INSERT INTO users (username, passhash, secret, editsecret, email, uploaded, downloaded, class, bonus, status, hides, hider, hiders, invayted, invayt, bonusss, comentoff, 
 schoutboxpos, added, language, invitedby, invitedroot, theme) VALUES (" . implode(",", array_map("sqlesc", array($wantusername, $wantpasshash, $secret, $editsecret, $email, $uploaded, $downloaded, 
 $class, $bonus, $status, $hides, $hider, $hiders, $invayted, $invayt, $bonusss, $comentoff, $schoutboxpos))).", '".get_date_time()."', '$default_language', '$inviter', '$invitedroot', '".select_theme()."')");
