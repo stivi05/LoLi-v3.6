@@ -519,13 +519,15 @@ $s .= "<td align='center' width='120px'>$hours_seedd</td></tr>";  //// vremya si
 function errs($msg){benc_resp(array("failure reason" => array(type => "string", value => $msg)));exit();}
 //////// functions_global OFF ///////////////
 function torrenttable($res, $variant = "index"){global $tracker_lang, $CURUSER;
-if($CURUSER["class"] < UC_1080i){$gigs = $CURUSER["downloaded"] / (1024*1024*1024);$ratio = (($CURUSER["downloaded"] > 10) ? ($CURUSER["uploaded"] / $CURUSER["downloaded"]) : 0);
-if($ratio < 0.5 || $gigs < 11) $wait = 48;elseif($ratio < 0.65 || $gigs < 20) $wait = 24;elseif($ratio < 0.8 || $gigs < 30) $wait = 12;elseif($ratio < 0.95 || $gigs < 40) $wait = 6;
-else $wait = 0;}$count_get = 0;foreach($_GET as $get_name => $get_value){
+if (($CURUSER["class"] < UC_VIP) && $CURUSER){$gigs = $CURUSER["uploaded"] / (1024*1024*1024);
+$ratio = (($CURUSER["downloaded"] > 0) ? ($CURUSER["uploaded"] / $CURUSER["downloaded"]) : 0);
+if($ratio < 0.5 || $gigs < 5) $wait = 0;elseif($ratio < 0.65 || $gigs < 6.5) $wait = 0;elseif($ratio < 0.8 || $gigs < 8) $wait = 0;
+elseif($ratio < 0.95 || $gigs < 9.5) $wait = 0;else $wait = 0;}$count_get = 0;
+foreach ($_GET as $get_name => $get_value) {
 $get_name = mysql_real_escape_string(strip_tags(str_replace(array("\"","'"),array("",""),$get_name)));
 $get_value = mysql_real_escape_string(strip_tags(str_replace(array("\"","'"),array("",""),$get_value)));
 if($get_name != "sort" && $get_name != "type"){
-if($count_get > 0) $oldlink = $oldlink . "&" . $get_name . "=" . $get_value;else $oldlink = $oldlink . $get_name . "=" . $get_value;$count_get++;}}
+if($count_get > 0)$oldlink = $oldlink . "&" . $get_name . "=" . $get_value;else $oldlink = $oldlink . $get_name . "=" . $get_value;$count_get++;}}
 if($count_get > 0)$oldlink = $oldlink . "&";
 if($_GET['sort'] == "1"){if($_GET['type'] == "desc"){$link1 = "asc";}else{$link1 = "desc";}}
 if($_GET['sort'] == "3"){if($_GET['type'] == "desc"){$link3 = "asc";}else{$link3 = "desc";}}
@@ -597,17 +599,11 @@ print("</a>");}else print("-");
 print("</td>");
 
 $dispname = $row["name"];
-switch ($row['free']) {
-case 'bril': $freepic = "&nbsp;<a href=\"Brilliant\" alt=\"Brilliant\" title=\"Brilliant\"><img src=\"pic/bril.gif\" title=\"Brilliant\" alt=\"Brilliant\"></a>";break;
-case 'yes': $freepic = "&nbsp;<a href=\"Gold\" alt=\"".$tracker_lang['golden']."\" title=\"".$tracker_lang['golden']."\"><img src=\"pic/golden.gif\" title=\"".$tracker_lang['golden']."\" alt=\"".$tracker_lang['golden']."\"></a>";break;
-case 'silver': $freepic = "&nbsp;<a href=\"Silver\" alt=\"".$tracker_lang['silver']."\" title=\"".$tracker_lang['silver']."\"><img src=\"pic/silvers.gif\" title=\"".$tracker_lang['silver']."\" alt=\"".$tracker_lang['silver']."\"></a>";break;
-case 'no': $freepic = '';}
-$thisisfree = $freepic;
 
-print("<td align=\"left\">".($row["not_sticky"] == "no" ? "<font size='3' title='Важный'>📌</font> " : "")."");
+print("<td align='left'>".($row["not_sticky"] == "no" ? "<b style='font-size:12px;margin-left:10px;' title='Важный'>📌</b>&nbsp;" : "&nbsp;&nbsp;&nbsp;")."");
 /////////////////////// 
-if($row["suid"]){?>&nbsp;
-<a href="download.php?id=<?=$row['id']?>"><img src="pic/trans.gif" title="Вы уже брали этот торрент. Нажмите, чтобы загрузить файл .torrent еще раз."/></a>&nbsp;<?} 
+if($row["suid"]){?>
+<a href="download.php?id=<?=$row['id']?>"><img src="pic/download1.gif" title="Вы уже брали этот торрент. Нажмите, чтобы загрузить файл .torrent еще раз."/></a>&nbsp;&nbsp;<?}
 ////////////////////////////
 print("<a href=\"details.php?");
 if ($variant == "mytorrents")
@@ -616,32 +612,37 @@ if ($variant == "mytorrents")
 if ($variant == "index" || $variant == "bookmarks")
 print("&amp;hit=1");         
 print("\">");      
-switch ($row['free']) {
-case 'bril': $disname = "<font color=\"blue\" title=\"Бриллиантовая раздача! Это значит, что кол-во розданного на этой раздаче удваивается!\">$dispname</font>";break;
-case 'yes': $disname = "<font color=\"#d08700\" title=\"Золотая раздача! Это значит, что кол-во скачанного на этой раздаче не идет в общую статистику!\">$dispname</font>";break;   
-case 'silver': $disname = "<font color=\"#778899\" title=\"Серебрянная раздача! Это значит, что половина скачанного на этой раздаче не идет в общую статистику!\">$dispname</font>";break;   
-case 'no': $disname = "$dispname";}
-$disnames = $disname;
-print("<b>$disnames</b></a> $thisisfree");
-
-if($CURUSER["id"] == $row["owner"] || get_user_class() >= UC_MODERATOR){
-print("<a target=_blank href='edit.php?id=$row[id]'><img border='0' src='pic/pen.gif' alt='".$tracker_lang['edit']."' title='".$tracker_lang['edit']."'/></a>");}
-
-if(!empty($row["description"])){print("<br />");$slova = $row["description"];$arr = explode(', ', $slova);
+switch ($row['free']){
+case 'bril': $freepic = "<a href='Brilliant' alt='Brilliant' title='Brilliant'><img valign='bottom' align='right' src='pic/brill.gif' title='Brilliant' alt='Brilliant'/></a>";
+$disname = "<b style='color:blue' title='Бриллиантовая раздача! Это значит, что кол-во розданного на этой раздаче удваивается!'>$dispname</b>";
+$sizereliz = "<b style='color:blue' title='Бриллиантовая раздача!'>".str_replace(" ", "<br>", mksize($row["size"]))."</b>";break;
+case 'yes': $freepic = "<a href='Gold' alt='".$tracker_lang['golden']."' title='".$tracker_lang['golden']."'><img valign='bottom' align='right' src='pic/gold.gif' title='".$tracker_lang['golden']."' alt='".$tracker_lang['golden']."'/></a>";
+$disname = "<b style='color:#d08700' title='Золотая раздача! Это значит, что кол-во скачанного на этой раздаче не идет в общую статистику!'>$dispname</b>";
+$sizereliz = "<b style='color:#d08700' title='Золотая раздача!'>".str_replace(" ", "<br>", mksize($row["size"]))."</b>";break;
+case 'silver': $freepic = "<a href='Silver' alt='".$tracker_lang['silver']."' title='".$tracker_lang['silver']."'><img valign='bottom' align='right' src='pic/silverdownload.gif' title='".$tracker_lang['silver']."' alt='".$tracker_lang['silver']."'/></a>";
+$disname = "<b style='color:#778899' title='Серебрянная раздача! Это значит, что половина скачанного на этой раздаче не идет в общую статистику!'>$dispname</b>";
+$sizereliz = "<b style='color:#778899' title='Серебрянная раздача!'>".str_replace(" ", "<br>", mksize($row["size"]))."</b>";break;
+case 'no': $freepic = '';$disname = $dispname;$sizereliz = "<b>".str_replace(" ", "<br>", mksize($row["size"]))."</b>";}$thisisfree = $freepic;$disnames = $disname;$sizerelizs = $sizereliz;
+///////////////////
+print("<b>$disnames</b></a><hr style='margin-left:10px;width:600px;align:left;'>");
+/////////////////////// 
+if(!empty($row["description"])){$slova = $row["description"];$arr = explode(', ', $slova);
 foreach ($arr as $word){$word = trim($word);$words = str_replace("+", "%2B", $word);
 print("<span class='badge-extra text-bold'><a style='font-weight:normal;color:#696969;' href='browse.php?jsearch=".unesc($words)."' title='".$words."'>".$words."</a></span> ");}
 }else{print("<span class='badge-extra text-bold'>Не прописано</span>");}
 if($wait){$elapsed = floor((gmtime() - strtotime($row["added"])) / 3600);if($elapsed < $wait){$color = dechex(floor(127*($wait - $elapsed)/48 + 128)*65536);
 print("<br><nobr><b style='font-size:10px;color:red;'>Поднимите рейтинг! Вы можете скачать этот релиз только через</b>&nbsp;<a href='faq#7'><b style='color:$color'>".number_format($wait - $elapsed)." h</b></a></nobr>");}}
-print("<br><b style='font-size:1;color:grey;'>Релиз залит:&nbsp;<i>".nicetime($row["added"], true)."</i></b>");
-if($row["updatess"] != 'no'){?>&nbsp;&nbsp;&nbsp;<img src="pic/updated.png" border="0" alt="Релиз был обновлен!" title="Релиз был обновлен!"/><?}			
-////////////////////
+///////////////////////
+print("<br><br><span style='margin-top:4px;' class='badge-extra text-bold'>".nicetime($row["added"], true)."</span>");
 $elapseds = floor((gmtime() - strtotime($row["added"])) / 86400);
-if($elapseds < 7 && $variant == "index"){print ("&nbsp;&nbsp;&nbsp;<img border='0' src='pic/new.png' alt='Новинка' title='Новинка'/>");}
-print("</td>\n");
+if($elapseds < 7){print("<span style='margin-left:5px;margin-top:4px;' class='badge-extra text-bold'><i style='font-weight:bold;color:red;' title='Новинка'>NEW</i></span>");}
+if($row["updatess"] == 'yes'){?><span style='margin-left:5px;margin-top:4px;' class='badge-extra text-bold'><i style='font-weight:bold;color:red;' title='Релиз был обновлен!'>UPDATED</i></span><?}
+if($CURUSER["id"] == $row["owner"] || get_user_class() >= UC_MODERATOR){
+print("&nbsp;&nbsp;<a target=_blank href='edit_$row[id]'><b style='font-size:18px' alt='".$tracker_lang['edit']."' title='".$tracker_lang['edit']."'>⚙</b></a>");}
+print("$thisisfree</td>");
 
 		if ($variant == "mytorrents") {
-			print("<td align=\"right\">");
+			print("<td align=\"center\">");
 			if ($row["visible"] == "no")
 				print("<font color=\"red\"><b>".$tracker_lang['no']."</b></font>");
 			else
@@ -649,22 +650,22 @@ print("</td>\n");
 			print("</td>\n");
 		}
 		if (!$row["comments"])
-			print("<td align=\"right\">" . $row["comments"] . "</td>\n");
+			print("<td align=\"center\">" . $row["comments"] . "</td>\n");
 		else {
 			if ($variant == "index")
-				print("<td align=\"right\"><b><a href=\"details.php?id=$id&amp;hit=1&amp;tocomm=1\">" . $row["comments"] . "</a></b></td>\n");
+				print("<td align=\"center\"><b><a href=\"details_$id&amp;hit=1&amp;tocomm=1\">" . $row["comments"] . "</a></b></td>\n");
 			else
-				print("<td align=\"right\"><b><a href=\"details.php?id=$id&amp;page=0#startcomments\">" . $row["comments"] . "</a></b></td>\n");
+				print("<td align=\"center\"><b><a href=\"details_$id&amp;page=0#startcomments\">" . $row["comments"] . "</a></b></td>\n");
 		}
-		print("<td align=\"center\">" . str_replace(" ", "<br />", mksize($row["size"])) . "</td>\n");
+		print("<td align=\"center\">$sizerelizs</td>\n");
 		print("<td align=\"center\">");
-if($row["seeders"] > 0){print("<b><a href=\"details.php?id=$id\"><font color='green'>".$row["seeders"]."</font></a></b>");}else{print("0");}
+if($row["seeders"] > 0){print("<b><a href=\"details_$id\"><font color='green'>".$row["seeders"]."</font></a></b>");}else{print("0");}
 print(" | ");
-if($row["leechers"] > 0){print("<b><a href=\"details.php?id=$id\"><font color='red'>".$row["leechers"]."</font></a></b>");}else{print("0");}
+if($row["leechers"] > 0){print("<b><a href=\"details_$id\"><font color='red'>".$row["leechers"]."</font></a></b>");}else{print("0");}
 if ($row['multitracker'] == 'yes'){print("<hr><b>MULTI</b><br>");
-if($row["remote_seeders"] > 0){print("<b><a href=\"details.php?id=$id\"><font color='green'>".$row["remote_seeders"]."</font></a></b>");}else{print("0");}
+if($row["remote_seeders"] > 0){print("<b><a href=\"details_$id\"><font color='green'>".$row["remote_seeders"]."</font></a></b>");}else{print("0");}
 print(" | ");
-if($row["remote_leechers"] > 0){print("<b><a href=\"details.php?id=$id\"><font color='red'>".$row["remote_leechers"]."</font></a></b>");}else{print("0");}}
+if($row["remote_leechers"] > 0){print("<b><a href=\"details_$id\"><font color='red'>".$row["remote_leechers"]."</font></a></b>");}else{print("0");}}
 print("</td>");
 
 		if ($variant == "index" || $variant == "bookmarks")
@@ -1166,14 +1167,15 @@ function get_head(){global $head;foreach($head AS $header){$head_array[] = $head
 ///////////////////////////////////////
 function ajax_text_convert($s){return iconv('UTF-8', 'UTF-8', $s);}
 ////////////////////////
-function failedloginscheck(){global $maxloginattempts;$total = 1;$ip = sqlesc(getip());$first = ip2long(getip());$username = htmlspecialchars_uni($_POST["username"]);
+function failedloginscheck(){global $maxloginattempts;$total = 1;$ip = sqlesc(getip());$username = htmlspecialchars_uni($_POST["username"]);
 $comment = sqlesc("Юзер $username исчерпал свои попытки входа.");
 $added = sqlesc(get_date_time());$Query = sql_query("SELECT SUM(attempts) FROM loginattempts WHERE ip=$ip") or sqlerr(__FILE__, __LINE__); 
 list($total) = mysql_fetch_array($Query);if($total == $maxloginattempts){        
-sql_query("INSERT INTO bans (added, addedby, comment, first) VALUES($added, '2', $comment, $first)") or sqlerr(__FILE__, __LINE__);	
+sql_query("INSERT INTO bans (added, addedby, comment, first) VALUES($added, '2', $comment, $ip)") or sqlerr(__FILE__, __LINE__);	
 sql_query("UPDATE loginattempts SET banned = 'yes' WHERE ip=$ip") or sqlerr(__FILE__, __LINE__);
+$resu = mysql_query("SELECT id FROM users WHERE username = ".sqlesc($username));$rowu = mysql_fetch_array($resu);if($rowu){
 sql_query("UPDATE users SET enabled = 'no' WHERE username=".sqlesc($username)) or sqlerr(__FILE__, __LINE__);
-write_log("Аккаунт юзера: <b style='color:red'>".$username."</b> отключен, так как исчерпаны попытки входа. Попытка взломать аккаунт?", "5DDB6E", "login");
+write_log("Аккаунт юзера: <b style='color:red'>".$username."</b> отключен, так как исчерпаны попытки входа. Попытка взломать аккаунт?", "5DDB6E", "login");}
 stderr("You can not enter!", "<center>You have exhausted your entry attempts! Your IP-address <b>(".htmlspecialchars($ip).")</b> was banned.</center><html><head><meta http-equiv='refresh' content='4;url=/'></head><body style='background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;'></body></html>");}} 
 /////////////////////
 function failedlogins(){$ip = sqlesc(getip());$added = sqlesc(get_date_time()); 
@@ -1188,14 +1190,15 @@ list($total) = mysql_fetch_array($Query);$remaining = $maxloginattempts - $total
 if($remaining <= 2 ) $remaining = "<b style='color:red;font-size:14px;'>".$remaining."</b>";
 else $remaining = "<b style='color:green;font-size:14px;'>".$remaining."</b>";return $remaining;}
 //////////////////////////////////////
-function failedloginschecks(){global $maxloginattemptss;$total = 0;$ip = sqlesc(getip());$first = ip2long(getip());$username = htmlspecialchars_uni($_POST["username"]);
+function failedloginschecks(){global $maxloginattemptss;$total = 0;$ip = sqlesc(getip());$username = htmlspecialchars_uni($_POST["username"]);
 $comment = sqlesc("Юзер $username исчерпал свои попытки вспомнить ответ на секретный вопрос.");
 $added = sqlesc(get_date_time());$Query = sql_query("SELECT SUM(attemptss) FROM loginattempts WHERE ip=$ip") or sqlerr(__FILE__, __LINE__); 
-list($total) = mysql_fetch_array($Query);if($total == $maxloginattemptss){         
-sql_query("INSERT INTO bans (added, addedby, comment, first) VALUES($added, '2', $comment, $first)") or sqlerr(__FILE__, __LINE__);	
+list($total) = mysql_fetch_array($Query);if($total == $maxloginattemptss){
+sql_query("INSERT INTO bans (added, addedby, comment, first) VALUES($added, '2', $comment, $ip)") or sqlerr(__FILE__, __LINE__);	
 sql_query("UPDATE loginattempts SET banned = 'yes' WHERE ip=$ip") or sqlerr(__FILE__, __LINE__);
+$resu = mysql_query("SELECT id FROM users WHERE username = ".sqlesc($username));$rowu = mysql_fetch_array($resu);if($rowu){
 sql_query("UPDATE users SET enabled = 'no' WHERE username=".sqlesc($username)) or sqlerr(__FILE__, __LINE__);
-write_log("Аккаунт юзера: <b style='color:red'>".$username."</b> отключен, так как исчерпаны попытки вспомнить ответ на секретный пароль. Попытка взломать аккаунт?", "5DDB6E", "login");		
+write_log("Аккаунт юзера: <b style='color:red'>".$username."</b> отключен, так как исчерпаны попытки вспомнить ответ на секретный пароль. Попытка взломать аккаунт?", "5DDB6E", "login");}
 stderr("You can not enter!", "<center>You have exhausted your entry attempts! Your IP-address <b>(".htmlspecialchars($ip).")</b> was banned.</center><html><head><meta http-equiv='refresh' content='4;url=/'></head><body style='background:#2F4F4F no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;'></body></html>");}} 
 /////////////////////
 function failedloginss(){$ip = sqlesc(getip());$added = sqlesc(get_date_time()); 
