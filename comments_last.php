@@ -5,7 +5,7 @@ $res1 = sql_query("SELECT COUNT(id) FROM comments");$row1 = mysql_fetch_array($r
 if($com == 0){stderr2($tracker_lang['error'], "<center>Комментарии не найдены</center><html><head><meta http-equiv='refresh' content='4;url=/'></head></html>");}else{
 $perpage = 10;list($pagertop, $pagerbottom, $limit) = pager2($perpage, $com, "comments_last.php?");
 $res = sql_query("SELECT t.name, c.torrent AS t_id, c.id, c.added, c.user, c.text, u.username, u.avatar, u.class, u.last_access FROM comments AS c 
-LEFT JOIN torrents as t ON c.torrent = t.id LEFT JOIN users as u ON c.user = u.id ORDER BY c.added DESC $limit") or sqlerr(__FILE__, __LINE__);
+LEFT JOIN browse as t ON c.torrent = t.id LEFT JOIN users as u ON c.user = u.id ORDER BY c.added DESC $limit") or sqlerr(__FILE__, __LINE__);
 ?><table style='background:none;cellspacing:0;cellpadding:0;width:100%;float:center;'><tr>
 <td align='center' style='background:none;cellspacing:0;cellpadding:0;width:100%;float:center;'><?
 print ("<table style='background:none;margin-top:0;cellspacing:0;margin-top:7px;cellpadding:0;width:100%;float:center;'><tr>
