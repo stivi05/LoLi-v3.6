@@ -6,7 +6,38 @@ LEFT JOIN categories AS c ON t.category = c.id WHERE t.id = $id") or sqlerr(__FI
 if(!$row['id'])stderr2("Ошибка", "<center>Релиза с таким ID не существует!</center><html><head><meta http-equiv=refresh content='3;url=/'></head></html>");
 ////////////////Авто-обновление Мультитрекера (BETA)///////////////////
 if(strtotime($row['last_mt_update']) < (TIMENOW - 3600) && $row['multitracker'] == 'yes'){
-header("Location: $DEFAULTBASEURL/update_multi.php?id=$id");}
+function scrape($id, $url, $info_hash){$timeout = 5;$udp = new udptscraper($timeout);$http = new httptscraper($timeout);
+try{if(substr($url, 0, 6) == 'udp://')$data = $udp->scrape($url, $info_hash);else $data = $http->scrape($url, $info_hash);$data = $data[$info_hash];
+mysql_query('UPDATE torrents_scrape SET state = "ok", error = "", seeders = '.intval($data['seeders']).', leechers = '.intval($data['leechers']).' WHERE tid = '.$id.' AND url = '.sqlesc($url)) or print(mysql_error()."\n");
+return true;}catch(ScraperException $e){
+mysql_query('UPDATE torrents_scrape SET state = "error", error = '.sqlesc($e->getMessage()).', seeders = 0, leechers = 0 WHERE tid = '.$id.' AND url = '.sqlesc($url)) or print(mysql_error()."\n");return false;}}
+function generate_token($id, $url, $info_hash){return md5(implode('', array($id, $url, $info_hash, COOKIE_SALT)));}
+function check_token($token, $id, $url, $info_hash){return $token === md5(implode('', array($id, $url, $info_hash, COOKIE_SALT)));}
+$id = intval($_GET['id']);if(!$id){header('Location: '.$DEFAULTBASEURL);exit();}
+if($_GET['info_hash'] && $_GET['url']){$token = strval($_GET['token']);$url = strval($_GET['url']);$info_hash = strval($_GET['info_hash']);
+if (strlen($info_hash) != 40)die('Invalid len info_hash supplied');if(!check_token($token, $id, $url, $info_hash))die('Invalid token');echo scrape($id, $url, $info_hash);exit;}
+list($name, $cur_visible, $multitracker, $last_mt_update) = mysql_fetch_row(mysql_query('SELECT name, visible, multitracker, last_mt_update FROM torrents WHERE id = '.$id));
+if ($name == '' || $multitracker == 'no'){stdmsg($tracker_lang['error'], "<center>Такого торрента нет, или он не мультитрекерный.</center>");}
+/////////////
+$anns_r = mysql_query('SELECT info_hash, url FROM torrents_scrape WHERE tid = '.$id);$s_sum = $l_sum = $errors = $success = 0;$pids = $works = array();
+while ($ann = mysql_fetch_array($anns_r))$works[] = $ann;
+if(function_exists('curl_multi_init')){$multi = curl_multi_init();$channels = array();foreach($works as $work){$url = $work['url'];$info_hash = $work['info_hash'];
+$url = $DEFAULTBASEURL.'/update_multi.php?id='.$id.'&url='.urlencode($url).'&info_hash='.urlencode($info_hash).'&token='.generate_token($id, $url, $info_hash);
+$ch = curl_init();curl_setopt($ch, CURLOPT_URL, $url);curl_setopt($ch, CURLOPT_HEADER, false);curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);curl_setopt($ch, CURLOPT_TIMEOUT_MS, 5000);curl_multi_add_handle($multi, $ch);$channels[$url] = $ch;}$running = null;
+do{while(CURLM_CALL_MULTI_PERFORM === curl_multi_exec($multi, $running));
+if(!$running)break;while(($res = curl_multi_select($multi)) === 0){};if($res === false){echo "<h1>select error</h1>";break;}}while(true);$success = 0;
+foreach($channels as $url => $channel){$success += intval(curl_multi_getcontent($channel));curl_multi_remove_handle($multi, $channel);}curl_multi_close($multi);
+}else foreach ($works as $work)scrape($id, $work['url'], $work['info_hash']);
+mysql_query('UPDATE torrents AS t INNER JOIN (SELECT ts.tid, SUM(ts.seeders) AS sum_seeders, SUM(ts.leechers) AS sum_leechers FROM torrents_scrape AS ts WHERE ts.tid = '.$id.' 
+GROUP BY ts.tid) AS ts ON ts.tid = t.id SET t.remote_seeders = ts.sum_seeders, t.remote_leechers = ts.sum_leechers, t.last_action = NOW(), t.last_mt_update = NOW(), 
+visible = IF(t.remote_seeders > 0, "yes", visible) WHERE t.id = '.$id) or sqlerr(__FILE__,__LINE__);
+mysql_query('UPDATE browse AS t INNER JOIN (SELECT ts.tid, SUM(ts.seeders) AS sum_seeders, SUM(ts.leechers) AS sum_leechers FROM torrents_scrape AS ts WHERE ts.tid = '.$id.' 
+GROUP BY ts.tid) AS ts ON ts.tid = t.id SET t.remote_seeders = ts.sum_seeders, t.remote_leechers = ts.sum_leechers WHERE t.id = '.$id) or sqlerr(__FILE__,__LINE__);
+header ("Content-Type: text/html; charset=".$tracker_lang['language_charset']);$announces_a = $announces_urls = array();
+$announces_r = mysql_query('SELECT url, seeders, leechers, last_update, state, error FROM torrents_scrape WHERE tid = '.$id);
+while($announce = mysql_fetch_array($announces_r)){$announces_a[] = $announce;$announces_urls[] = $announce['url'];}unset($announce);
+if(!count($announces_a)){mysql_query("UPDATE torrents SET multitracker = 'no' WHERE id = $id");mysql_query("UPDATE browse SET multitracker = 'no' WHERE id = $id");}}
 ////////////////Авто-обновление Мультитрекера (BETA)///////////////////
 $keywords = $row['keywords'];$description = $row['description'];
 if(isset($_GET["hit"])){mysql_query("UPDATE torrents SET views = views + 1 WHERE id = $id");
