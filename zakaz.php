@@ -1,4 +1,4 @@
-<?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER){stdhead("Стол заказов");
+<?php require_once("include/bittorrent.php");dbconn(true);gzip();if($CURUSER){global $rootpath;stdhead("Стол заказов");
 function bark($msg){genbark($msg, $tracker_lang['error']);}?>
 <?if(isset($_REQUEST['id'])) $id = intval($_REQUEST['id']);else $id = "";if($_REQUEST['action'] == "zakaz" and $id){
 $raw = sql_query("SELECT z.cat_id, z.incat_id,z.text, z.user_id, z.class, z.user, z.cl_user_id, z.cl_user_class, z.cl_user, z.image1, z.status, z.name, 
