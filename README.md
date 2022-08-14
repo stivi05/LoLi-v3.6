@@ -1,13 +1,6 @@
 # LoLi-v3.6
-The modified script TBDeV with caching, a small optimization.
+The modified script TBDeV with caching, a small optimization maded by Nemezida.
 
 The script for the bundle:
-FastCGI (Nginx + PHP-FPM) PHP 5.4.45
---------------
-Так как форум ТБДев от Юны почил в пучине темной (скончался), появилась идея продолжить, тем более что есть куда улучшать скрипт.
-----------
-Установка скрипта LoLi v3.6: https://tbdev-forum.top/viewtopic.php?f=87&t=526
--------------------
-Внимание! Скрипт выложен не полностью! Страницы выкладываются по мере выпиливания из них платного кода модов.
-ФРИ-версия будет сильно урезанной копией скрипта что сейчас на тестовом сайте стоит.
----------
+FastCGI (Nginx + PHP-FPM) PHP 5.6.40
+Soon it will work on FastCGI (Nginx + PHP-FPM) PHP 7.4
